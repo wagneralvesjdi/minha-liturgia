@@ -1,0 +1,812 @@
+:root {
+  --violet: #a15a1a;
+  --violet-dark: #7a3f12;
+  --gold: #b8952f;
+  --bg: #f4f1ea;
+  --card-bg: #ffffff;
+  --text: #26202b;
+  --muted: #6b6470;
+  --border: #e6e0d6;
+  --radius: 14px;
+  --txt-scale: 1;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+/* --txt-scale afeta apenas o texto de leitura (ver seletores abaixo), não a estrutura do layout. */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Georgia", "Iowan Old Style", "Palatino Linotype", serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  padding-bottom: 3rem;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.75rem;
+  background: linear-gradient(180deg, var(--violet) 0%, var(--violet-dark) 100%);
+  color: #fff;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+}
+
+.font-size-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+.font-size-ctrl .btn {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+.font-size-ctrl .font-size-pct {
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  min-width: 2.6rem;
+  text-align: center;
+}
+
+.brand { display: flex; align-items: center; gap: 0.6rem; }
+.brand-link {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: none; border: none; padding: 0; margin: 0;
+  color: inherit; text-align: left; cursor: pointer; font: inherit;
+}
+.brand-icon { width: 34px; height: 34px; border-radius: 8px; }
+.topbar h1 { margin: 0; font-size: 1.25rem; letter-spacing: 0.02em; }
+.subtitle { margin: 0; font-size: 0.75rem; opacity: 0.85; font-family: system-ui, sans-serif; }
+
+main {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.date-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.date-nav .btn.subtle { background: var(--bg); }
+
+#datePicker {
+  flex: 1;
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+}
+
+.btn {
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: transform 0.05s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:active { transform: scale(0.97); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+
+.btn.icon {
+  padding: 0.5rem 0.75rem;
+  font-size: 1.1rem;
+  background: var(--bg);
+  color: var(--violet-dark);
+  border-color: var(--border);
+}
+
+.btn.subtle {
+  background: var(--card-bg);
+  color: var(--violet-dark);
+  font-weight: 600;
+  border-color: var(--border);
+}
+
+.btn.primary {
+  background: var(--violet);
+  color: #fff;
+  font-weight: 600;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(161, 90, 26, 0.35);
+}
+.btn.primary:hover { background: var(--violet-dark); }
+
+.btn.ghost {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: none;
+}
+
+.status {
+  min-height: 1.2rem;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.status.error { color: #a3302a; }
+
+.liturgy-header { text-align: center; }
+
+.promessa-intro { text-align: center; }
+.promessa-intro .btn.primary { margin-top: 0.7rem; }
+
+.color-badge {
+  display: inline-block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.color-verde { background: #2f7a3d; }
+.color-vermelho { background: #a3302a; }
+.color-roxo { background: #5b2a86; }
+.color-rosa { background: #c46a9c; }
+.color-branco { background: #8a8578; }
+.color-dourado { background: #b8952f; }
+
+#celebrationTitle {
+  margin: 0.2rem 0 0.3rem;
+  font-size: 1.3rem;
+  line-height: 1.3;
+}
+
+.date-line {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.cycle-line {
+  margin: 0.2rem 0 0;
+  font-family: system-ui, sans-serif;
+  color: var(--violet-dark);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.section h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  color: var(--violet-dark);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.35rem;
+}
+
+.hint {
+  font-family: system-ui, sans-serif;
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 400;
+  text-transform: none;
+}
+
+.reading-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+}
+.reading-options .btn {
+  font-size: 0.78rem;
+  padding: 0.4rem 0.75rem;
+}
+.reading-options .btn.subtle { background: var(--bg); }
+.reading-options .btn.active {
+  background: var(--violet);
+  color: #fff;
+  border-color: var(--violet);
+}
+
+.reference {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+}
+
+.reading-text, .prayer-text {
+  white-space: pre-line;
+  line-height: 1.65;
+  margin: 0;
+  font-size: calc(1.02rem * var(--txt-scale));
+}
+
+.refrain {
+  font-weight: 700;
+  font-style: italic;
+  color: var(--violet-dark);
+  margin: 0 0 0.5rem;
+  font-size: calc(1.02rem * var(--txt-scale));
+}
+
+.fieis-note {
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+
+.share-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.offline-note {
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: #fff8e6;
+  border: 1px solid #f0dfa8;
+  border-radius: 10px;
+  padding: 0.6rem;
+}
+
+footer {
+  max-width: 620px;
+  margin: 1.5rem auto 0;
+  padding: 0 1.2rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+}
+footer a { color: var(--violet-dark); }
+
+/* ---------- Tela inicial ---------- */
+
+.view { display: flex; flex-direction: column; gap: 0.9rem; }
+
+.day-verse-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  font: inherit;
+  color: inherit;
+}
+.day-verse-card:active { transform: scale(0.99); }
+
+.day-verse-label {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+
+.day-verse-ref {
+  margin: 0 0 0.3rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--violet-dark);
+}
+
+.day-verse-text {
+  margin: 0;
+  font-style: italic;
+  line-height: 1.55;
+  font-size: calc(1rem * var(--txt-scale));
+}
+
+.home-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.home-group-label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.55rem;
+}
+
+.home-card-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 0.4rem 0.7rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  font: inherit;
+  color: inherit;
+}
+.home-card-compact:active { transform: scale(0.97); }
+
+.home-card-compact-icon {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--violet);
+}
+.home-card-compact-icon svg { width: 100%; height: 100%; }
+
+.home-card-compact-title { font-size: 0.74rem; font-weight: 600; line-height: 1.25; }
+
+/* ---------- Navegação / botão voltar ---------- */
+
+.back-link {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--violet-dark);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: transform 0.05s ease, background 0.15s ease;
+}
+.back-link:active { transform: scale(0.96); }
+
+/* ---------- Bíblia Sagrada ---------- */
+
+.bible-title { margin: 0.2rem 0 0.8rem; font-size: 1.2rem; }
+
+.testament-choice { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 0.3rem; }
+.testament-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+.book-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.book-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+.book-btn small { font-family: system-ui, sans-serif; font-size: 0.75rem; color: var(--muted); }
+
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 0.5rem;
+}
+.chapter-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--violet-dark);
+  cursor: pointer;
+}
+
+.reader-header { display: flex; flex-direction: column; gap: 0.6rem; }
+.verse-jump {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.verse-jump label { flex-shrink: 0; }
+.verse-jump .btn.subtle { background: var(--bg); }
+.verse-jump input {
+  width: 4.5rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.verse-list { line-height: 1.7; font-size: calc(1rem * var(--txt-scale)); }
+.verse { margin: 0 0 0.85rem; scroll-margin-top: 1rem; border-radius: 6px; transition: background-color 0.4s ease; }
+.verse-num {
+  font-family: system-ui, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--gold);
+  vertical-align: super;
+  margin-right: 0.25rem;
+  opacity: 0.85;
+}
+.verse-highlight { background-color: rgba(184, 149, 47, 0.25); }
+
+/* ---------- Orações Eucarísticas ---------- */
+
+.eucharist-body { line-height: 1.65; }
+
+.eu-line { margin: 0 0 1rem; font-size: calc(1rem * var(--txt-scale)); }
+
+.eu-label {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.eu-sacerdote .eu-label { color: var(--violet-dark); }
+
+.eu-assembleia {
+  background: rgba(184, 149, 47, 0.12);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.8rem;
+}
+.eu-assembleia .eu-label { color: var(--gold); }
+
+.eu-consagracao {
+  font-weight: 700;
+  text-align: center;
+  padding: 0.9rem 1rem;
+  margin: 1.1rem 0;
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  background: rgba(184, 149, 47, 0.08);
+}
+
+.eu-misterio {
+  font-weight: 700;
+  text-align: center;
+  padding: 0.9rem 1rem;
+  margin: 1.3rem 0 1.1rem;
+  border: 1px solid var(--violet-dark);
+  border-radius: 10px;
+  background: rgba(90, 30, 110, 0.06);
+}
+.eu-misterio .eu-nota { display: block; font-weight: 400; margin-top: 0.3rem; }
+
+.eu-nota {
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* ---------- Catecismo ---------- */
+
+.cic-search { padding: 0.7rem 0.9rem; }
+.cic-search input {
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  outline: none;
+}
+.cic-search input::placeholder { color: var(--muted); }
+
+.cic-showall {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.cic-results-heading {
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 1.1rem 0 0.5rem;
+}
+
+.cic-breadcrumb {
+  font-family: system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.hidden { display: none !important; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.2rem;
+  transform: translateX(-50%);
+  background: var(--violet-dark);
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  z-index: 50;
+}
+
+.update-banner {
+  position: fixed;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  z-index: 60;
+}
+.update-banner .btn {
+  flex-shrink: 0;
+  width: auto;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1720;
+    --card-bg: #262030;
+    --text: #efe9f5;
+    --muted: #a79cb3;
+    --border: #3a3244;
+  }
+  #datePicker { background: #201a29; color: var(--text); }
+  .offline-note { background: #332a17; border-color: #5a481f; color: #e7d9a8; }
+}
+
+/* ---------- Reflexão contínua (Apoio à Homilia) ---------- */
+
+.reflexao-text { line-height: 1.7; margin: 0 0 1rem; font-size: calc(1.02rem * var(--txt-scale)); }
+
+/* ---------- PDF da Celebração Completa ---------- */
+
+#pdfPrintArea { display: none; }
+
+body.pdf-print-mode > header,
+body.pdf-print-mode > main,
+body.pdf-print-mode > footer,
+body.pdf-print-mode #installBtn,
+body.pdf-print-mode .toast {
+  display: none !important;
+}
+
+body.pdf-print-mode #pdfPrintArea {
+  display: block;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  color: #1a1a1a;
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.55;
+}
+
+.pdf-doc h1 {
+  font-size: 1.6rem;
+  margin: 0 0 0.3rem;
+  color: #4a2a0e;
+}
+
+.pdf-doc .pdf-sub {
+  margin: 0 0 0.2rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.pdf-doc h2 {
+  font-size: 1.15rem;
+  margin: 1.4rem 0 0.4rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid #ccc;
+  color: #4a2a0e;
+}
+
+.pdf-doc .pdf-reflexao-titulo { margin-top: 2.2rem; }
+
+.pdf-doc .pdf-ref {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #555;
+  margin: 0 0 0.4rem;
+}
+
+.pdf-doc .pdf-refrao {
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+}
+
+.pdf-doc p { margin: 0 0 0.8rem; }
+
+@media print {
+  @page { margin: 1.5cm; }
+  body.pdf-print-mode #pdfPrintArea { padding: 0; max-width: none; }
+}
+
+.quaresma-roteiro-btn {
+  width: 100%;
+  margin-top: 0.6rem;
+}
+
+.quaresma-dia {
+  margin-bottom: 0.7rem;
+}
+
+.quaresma-dia-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0 0 0.4rem;
+}
+
+.quaresma-dia-header h3 {
+  margin: 0;
+}
+
+.quaresma-dia-check {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.quaresma-passagem-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.quaresma-passagem-link:hover,
+.quaresma-passagem-link:focus-visible {
+  text-decoration: underline;
+}
+
+.quaresma-passagem-icone {
+  color: var(--gold);
+}
+
+.quaresma-trilha-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 0.25rem;
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  font: inherit;
+  color: inherit;
+  margin-bottom: 0.6rem;
+}
+.quaresma-trilha-btn:active { transform: scale(0.98); }
+.quaresma-trilha-btn .home-card-compact-title { font-size: 0.95rem; }
+.quaresma-trilha-btn small {
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.quaresma-diario {
+  margin-top: 0.5rem;
+}
+.quaresma-diario summary {
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--violet-dark);
+  cursor: pointer;
+}
+.quaresma-diario-label {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0.5rem 0 0.2rem;
+}
+.quaresma-diario-textarea {
+  width: 100%;
+  font: inherit;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: inherit;
+  resize: vertical;
+}

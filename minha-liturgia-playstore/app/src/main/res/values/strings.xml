@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Minha Liturgia</string>
+    <string name="launch_url">https://wagneralvesjdi.github.io/minha-liturgia/</string>
+    <string name="host">wagneralvesjdi.github.io</string>
+
+    <!-- Precisa bater exatamente com o conteúdo publicado em
+         https://wagneralvesjdi.github.io/.well-known/assetlinks.json .
+         Se a keystore de assinatura mudar, atualize a impressão digital
+         SHA-256 nos dois lugares. -->
+    <string name="asset_statements">
+        [{
+          \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+          \"target\": {
+            \"namespace\": \"android_app\",
+            \"package_name\": \"com.minhaliturgia.app\",
+            \"sha256_cert_fingerprints\": [\"23:4A:2C:15:55:13:C7:80:E7:7F:A8:0A:01:59:64:0B:F3:BF:55:D9:E0:80:C2:30:44:7A:20:44:69:BA:DC:8A\"]
+          }
+        }]
+    </string>
+</resources>

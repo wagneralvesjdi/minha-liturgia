@@ -1,0 +1,21 @@
+{
+  "name": "Minha Liturgia",
+  "short_name": "Minha Liturgia",
+  "description": "Liturgia diária católica completa: Oração Coleta, leituras, Salmo, Evangelho e orações — para qualquer data, anos litúrgicos A, B e C.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f1ea",
+  "theme_color": "#a15a1a",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["lifestyle", "religion", "books"],
+  "icons": [
+    { "src": "icons/icon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "icons/icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

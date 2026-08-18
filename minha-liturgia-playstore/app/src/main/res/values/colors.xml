@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mesma paleta de cores do PWA (variáveis violet, violet-dark e bg em styles.css) -->
+    <color name="colorPrimary">#A15A1A</color>
+    <color name="colorPrimaryDark">#7A3F12</color>
+    <color name="colorBackground">#F4F1EA</color>
+</resources>

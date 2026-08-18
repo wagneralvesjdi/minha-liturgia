@@ -1,0 +1,24 @@
+{
+  "packageId": "com.minhaliturgia.app",
+  "host": "wagneralvesjdi.github.io",
+  "name": "Minha Liturgia",
+  "launcherName": "Minha Liturgia",
+  "display": "standalone",
+  "themeColor": "#A15A1A",
+  "navigationColor": "#7A3F12",
+  "navigationColorDark": "#7A3F12",
+  "backgroundColor": "#F4F1EA",
+  "enableNotifications": false,
+  "startUrl": "/minha-liturgia/",
+  "iconUrl": "https://wagneralvesjdi.github.io/minha-liturgia/icons/icon-512.png",
+  "maskableIconUrl": "https://wagneralvesjdi.github.io/minha-liturgia/icons/icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./minha-liturgia-release.jks",
+    "alias": "minhaliturgia"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "note": "Este arquivo é uma referência no formato do Bubblewrap (@bubblewrap/cli), caso você queira usar essa ferramenta no futuro para automatizar builds. O projeto Android em app/ já está pronto e não depende do Bubblewrap para funcionar."
+}

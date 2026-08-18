@@ -1,0 +1,47 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'com.minhaliturgia.app'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.minhaliturgia.app"
+        minSdkVersion 21
+        targetSdkVersion 36
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    signingConfigs {
+        release {
+            def storeFilePath = project.findProperty('MINHALITURGIA_RELEASE_STORE_FILE')
+            if (storeFilePath) {
+                storeFile file(storeFilePath)
+                storePassword project.findProperty('MINHALITURGIA_RELEASE_STORE_PASSWORD')
+                keyAlias project.findProperty('MINHALITURGIA_RELEASE_KEY_ALIAS')
+                keyPassword project.findProperty('MINHALITURGIA_RELEASE_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (project.findProperty('MINHALITURGIA_RELEASE_STORE_FILE')) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    // Trusted Web Activity: empacota o PWA como app Android, abrindo o
+    // conteúdo do site dentro de uma "casca" nativa via Chrome Custom Tabs.
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.6.1'
+}

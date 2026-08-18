@@ -1,0 +1,15 @@
+# Segredos e artefatos locais — NUNCA commitar num repositório público.
+*.jks
+*.keystore
+local.properties
+keystore.properties
+
+# Build
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+.idea/
+*.iml
+.DS_Store
