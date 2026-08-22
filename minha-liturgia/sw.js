@@ -1,4 +1,4 @@
-const CACHE_NAME = 'minha-liturgia-v48';
+const CACHE_NAME = 'minha-liturgia-v49';
 const APP_SHELL = [
   './',
   './index.html',
@@ -23,6 +23,17 @@ const APP_SHELL = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
+  './icons/home/liturgia-do-dia.png',
+  './icons/home/biblia-sagrada.png',
+  './icons/home/oracoes-eucaristicas.png',
+  './icons/home/santo-terco.png',
+  './icons/home/hora-santa.png',
+  './icons/home/santo-do-dia.png',
+  './icons/home/oracoes-diversas.png',
+  './icons/home/quaresma-sao-miguel.png',
+  './icons/home/preciosas-promessas.png',
+  './icons/home/catecismo.png',
+  './icons/home/santa-se.png',
 ];
 
 // Conteúdo grande e praticamente estático: cache-first para não baixar de novo a cada visita.
