@@ -1,15 +1,19 @@
 :root {
-  --violet: #a15a1a;
-  --violet-dark: #7a3f12;
-  --gold: #b8952f;
-  --bg: #f4f1ea;
-  --card-bg: #ffffff;
-  --text: #26202b;
-  --muted: #6b6470;
-  --border: #e6e0d6;
-  --radius: 14px;
+  --violet: #D4AF37;
+  --violet-dark: #B8952F;
+  --gold: #F59E0B;
+  --gold-bright: #FFD700;
+  --text-gold: #E8C45A;
+  --bg: #0F0F12;
+  --bg-secondary: #1C1824;
+  --card-bg: #242033;
+  --card-bg-light: #2A2636;
+  --text: #FFFFFF;
+  --muted: #C9C9D4;
+  --border: rgba(255, 255, 255, 0.08);
+  --radius: 16px;
   --txt-scale: 1;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -21,8 +25,13 @@ html, body {
   padding: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Georgia", "Iowan Old Style", "Palatino Linotype", serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3,
+.bible-title, #celebrationTitle {
+  font-family: "Playfair Display", Georgia, serif;
 }
 
 body {
@@ -35,10 +44,11 @@ body {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 1rem 1rem 0.75rem;
-  background: linear-gradient(180deg, var(--violet) 0%, var(--violet-dark) 100%);
-  color: #fff;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
   border-radius: 0 0 18px 18px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
 }
 
 .font-size-ctrl {
@@ -53,7 +63,7 @@ body {
   line-height: 1;
 }
 .font-size-ctrl .font-size-pct {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   min-width: 2.6rem;
@@ -68,7 +78,7 @@ body {
 }
 .brand-icon { width: 34px; height: 34px; border-radius: 8px; }
 .topbar h1 { margin: 0; font-size: 1.25rem; letter-spacing: 0.02em; }
-.subtitle { margin: 0; font-size: 0.75rem; opacity: 0.85; font-family: system-ui, sans-serif; }
+.subtitle { margin: 0; font-size: 0.75rem; opacity: 0.85; font-family: "Inter", system-ui, sans-serif; }
 
 main {
   max-width: 620px;
@@ -94,17 +104,18 @@ main {
 
 #datePicker {
   flex: 1;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 1rem;
   padding: 0.5rem 0.6rem;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--card-bg-light);
   color: var(--text);
+  color-scheme: dark;
 }
 
 .btn {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.9rem;
   border: 1px solid transparent;
   border-radius: 10px;
@@ -132,10 +143,10 @@ main {
 
 .btn.primary {
   background: var(--violet);
-  color: #fff;
+  color: #16130A;
   font-weight: 600;
   width: 100%;
-  box-shadow: 0 2px 6px rgba(161, 90, 26, 0.35);
+  box-shadow: 0 2px 6px rgba(212, 175, 55, 0.35);
 }
 .btn.primary:hover { background: var(--violet-dark); }
 
@@ -149,13 +160,13 @@ main {
 .status {
   min-height: 1.2rem;
   text-align: center;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   color: var(--muted);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
-.status.error { color: #a3302a; }
+.status.error { color: #e5776f; }
 
 .liturgy-header { text-align: center; }
 
@@ -164,7 +175,7 @@ main {
 
 .color-badge {
   display: inline-block;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -179,7 +190,7 @@ main {
 .color-roxo { background: #5b2a86; }
 .color-rosa { background: #c46a9c; }
 .color-branco { background: #8a8578; }
-.color-dourado { background: #b8952f; }
+.color-dourado { background: #D4AF37; }
 
 #celebrationTitle {
   margin: 0.2rem 0 0.3rem;
@@ -189,7 +200,7 @@ main {
 
 .date-line {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   color: var(--muted);
   font-size: 0.9rem;
   text-transform: capitalize;
@@ -197,7 +208,7 @@ main {
 
 .cycle-line {
   margin: 0.2rem 0 0;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   color: var(--violet-dark);
   font-size: 0.85rem;
   font-weight: 600;
@@ -212,7 +223,7 @@ main {
 }
 
 .hint {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.7rem;
   color: var(--muted);
   font-weight: 400;
@@ -232,12 +243,12 @@ main {
 .reading-options .btn.subtle { background: var(--bg); }
 .reading-options .btn.active {
   background: var(--violet);
-  color: #fff;
+  color: #16130A;
   border-color: var(--violet);
 }
 
 .reference {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.85rem;
   color: var(--gold);
   font-weight: 700;
@@ -260,7 +271,7 @@ main {
 }
 
 .fieis-note {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.8rem;
   color: var(--muted);
   margin: 0 0 0.6rem;
@@ -275,11 +286,11 @@ main {
 
 .offline-note {
   text-align: center;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.85rem;
-  color: var(--muted);
-  background: #fff8e6;
-  border: 1px solid #f0dfa8;
+  color: var(--text-gold);
+  background: #332a17;
+  border: 1px solid #5a481f;
   border-radius: 10px;
   padding: 0.6rem;
 }
@@ -288,7 +299,7 @@ footer {
   max-width: 620px;
   margin: 1.5rem auto 0;
   padding: 0 1.2rem;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.72rem;
   color: var(--muted);
   text-align: center;
@@ -318,7 +329,7 @@ footer a { color: var(--violet-dark); }
 
 .day-verse-label {
   display: block;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -329,7 +340,7 @@ footer a { color: var(--violet-dark); }
 
 .day-verse-ref {
   margin: 0 0 0.3rem;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--violet-dark);
@@ -345,7 +356,7 @@ footer a { color: var(--violet-dark); }
 .home-group { display: flex; flex-direction: column; gap: 0.5rem; }
 
 .home-group-label {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -395,7 +406,7 @@ footer a { color: var(--violet-dark); }
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 999px;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--violet-dark);
@@ -437,7 +448,7 @@ footer a { color: var(--violet-dark); }
   cursor: pointer;
   text-align: left;
 }
-.book-btn small { font-family: system-ui, sans-serif; font-size: 0.75rem; color: var(--muted); }
+.book-btn small { font-family: "Inter", system-ui, sans-serif; font-size: 0.75rem; color: var(--muted); }
 
 .chapter-grid {
   display: grid;
@@ -449,7 +460,7 @@ footer a { color: var(--violet-dark); }
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.7rem 0;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--violet-dark);
@@ -461,7 +472,7 @@ footer a { color: var(--violet-dark); }
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.85rem;
   color: var(--muted);
 }
@@ -480,7 +491,7 @@ footer a { color: var(--violet-dark); }
 .verse-list { line-height: 1.7; font-size: calc(1rem * var(--txt-scale)); }
 .verse { margin: 0 0 0.85rem; scroll-margin-top: 1rem; border-radius: 6px; transition: background-color 0.4s ease; }
 .verse-num {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.6rem;
   font-weight: 600;
   color: var(--gold);
@@ -488,7 +499,7 @@ footer a { color: var(--violet-dark); }
   margin-right: 0.25rem;
   opacity: 0.85;
 }
-.verse-highlight { background-color: rgba(184, 149, 47, 0.25); }
+.verse-highlight { background-color: rgba(245, 158, 11, 0.25); }
 
 /* ---------- Orações Eucarísticas ---------- */
 
@@ -498,7 +509,7 @@ footer a { color: var(--violet-dark); }
 
 .eu-label {
   display: block;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -509,7 +520,7 @@ footer a { color: var(--violet-dark); }
 .eu-sacerdote .eu-label { color: var(--violet-dark); }
 
 .eu-assembleia {
-  background: rgba(184, 149, 47, 0.12);
+  background: rgba(245, 158, 11, 0.12);
   border-left: 3px solid var(--gold);
   border-radius: 0 8px 8px 0;
   padding: 0.6rem 0.8rem;
@@ -523,7 +534,7 @@ footer a { color: var(--violet-dark); }
   margin: 1.1rem 0;
   border: 1px solid var(--gold);
   border-radius: 10px;
-  background: rgba(184, 149, 47, 0.08);
+  background: rgba(245, 158, 11, 0.08);
 }
 
 .eu-misterio {
@@ -531,14 +542,14 @@ footer a { color: var(--violet-dark); }
   text-align: center;
   padding: 0.9rem 1rem;
   margin: 1.3rem 0 1.1rem;
-  border: 1px solid var(--violet-dark);
+  border: 1px solid var(--gold-bright);
   border-radius: 10px;
-  background: rgba(90, 30, 110, 0.06);
+  background: rgba(255, 215, 0, 0.06);
 }
 .eu-misterio .eu-nota { display: block; font-weight: 400; margin-top: 0.3rem; }
 
 .eu-nota {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.8rem;
   font-style: italic;
   color: var(--muted);
@@ -564,7 +575,7 @@ footer a { color: var(--violet-dark); }
 }
 
 .cic-results-heading {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -574,7 +585,7 @@ footer a { color: var(--violet-dark); }
 }
 
 .cic-breadcrumb {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.82rem;
   color: var(--muted);
   margin: 0;
@@ -587,13 +598,14 @@ footer a { color: var(--violet-dark); }
   left: 50%;
   bottom: 1.2rem;
   transform: translateX(-50%);
-  background: var(--violet-dark);
-  color: #fff;
-  font-family: system-ui, sans-serif;
+  background: var(--card-bg-light);
+  border: 1px solid var(--violet-dark);
+  color: var(--text-gold);
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.85rem;
   padding: 0.6rem 1rem;
   border-radius: 999px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
   z-index: 50;
 }
 
@@ -612,7 +624,7 @@ footer a { color: var(--violet-dark); }
   border-radius: var(--radius);
   padding: 0.75rem 0.9rem;
   box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.85rem;
   z-index: 60;
 }
@@ -623,17 +635,6 @@ footer a { color: var(--violet-dark); }
   font-size: 0.82rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1720;
-    --card-bg: #262030;
-    --text: #efe9f5;
-    --muted: #a79cb3;
-    --border: #3a3244;
-  }
-  #datePicker { background: #201a29; color: var(--text); }
-  .offline-note { background: #332a17; border-color: #5a481f; color: #e7d9a8; }
-}
 
 /* ---------- Reflexão contínua (Apoio à Homilia) ---------- */
 
@@ -669,7 +670,7 @@ body.pdf-print-mode #pdfPrintArea {
 
 .pdf-doc .pdf-sub {
   margin: 0 0 0.2rem;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.9rem;
   color: #444;
 }
@@ -685,7 +686,7 @@ body.pdf-print-mode #pdfPrintArea {
 .pdf-doc .pdf-reflexao-titulo { margin-top: 2.2rem; }
 
 .pdf-doc .pdf-ref {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.85rem;
   font-style: italic;
   color: #555;
@@ -729,7 +730,7 @@ body.pdf-print-mode #pdfPrintArea {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.8rem;
   color: var(--muted);
   white-space: nowrap;
@@ -775,7 +776,7 @@ body.pdf-print-mode #pdfPrintArea {
 .quaresma-trilha-btn:active { transform: scale(0.98); }
 .quaresma-trilha-btn .home-card-compact-title { font-size: 0.95rem; }
 .quaresma-trilha-btn small {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.78rem;
   color: var(--muted);
   line-height: 1.35;
@@ -785,7 +786,7 @@ body.pdf-print-mode #pdfPrintArea {
   margin-top: 0.5rem;
 }
 .quaresma-diario summary {
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--violet-dark);
@@ -793,7 +794,7 @@ body.pdf-print-mode #pdfPrintArea {
 }
 .quaresma-diario-label {
   display: block;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.75rem;
   color: var(--muted);
   margin: 0.5rem 0 0.2rem;
@@ -801,7 +802,7 @@ body.pdf-print-mode #pdfPrintArea {
 .quaresma-diario-textarea {
   width: 100%;
   font: inherit;
-  font-family: system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 0.85rem;
   padding: 0.4rem 0.55rem;
   border: 1px solid var(--border);
