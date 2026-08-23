@@ -4,6 +4,7 @@
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
   let currentBtn = null;
+  let currentUtterance = null; // precisa ficar viva fora da função, senão o Chrome recolhe (GC) e a fala não sai
   let ptVoice = null;
 
   function pickVoice() {
@@ -33,6 +34,21 @@
     speechSynthesis.cancel();
     if (currentBtn) setLabel(currentBtn, 'idle');
     currentBtn = null;
+    currentUtterance = null;
+  }
+
+  function speakNow(btn, text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pt-BR';
+    if (ptVoice) utterance.voice = ptVoice;
+    utterance.rate = 0.95;
+    utterance.onend = () => { setLabel(btn, 'idle'); currentBtn = null; currentUtterance = null; };
+    utterance.onerror = () => { setLabel(btn, 'idle'); currentBtn = null; currentUtterance = null; };
+
+    currentUtterance = utterance;
+    currentBtn = btn;
+    setLabel(btn, 'playing');
+    speechSynthesis.speak(utterance);
   }
 
   function toggle(btn, getText) {
@@ -52,25 +68,22 @@
       return;
     }
 
-    speechSynthesis.cancel();
-    if (currentBtn && currentBtn !== btn) setLabel(currentBtn, 'idle');
-
     const text = (getText() || '').trim();
     if (!text) {
       if (window.showToast) window.showToast('Nada para narrar aqui ainda.');
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    if (ptVoice) utterance.voice = ptVoice;
-    utterance.rate = 0.95;
-    utterance.onend = () => { setLabel(btn, 'idle'); currentBtn = null; };
-    utterance.onerror = () => { setLabel(btn, 'idle'); currentBtn = null; };
+    if (currentBtn && currentBtn !== btn) setLabel(currentBtn, 'idle');
 
-    currentBtn = btn;
-    setLabel(btn, 'playing');
-    speechSynthesis.speak(utterance);
+    if (speechSynthesis.speaking || speechSynthesis.pending) {
+      // Chamar speak() logo após cancel() no mesmo instante costuma ser ignorado
+      // pelo motor de voz do Chrome/Android — um pequeno atraso evita a corrida.
+      speechSynthesis.cancel();
+      setTimeout(() => speakNow(btn, text), 80);
+    } else {
+      speakNow(btn, text);
+    }
   }
 
   window.MinhaLiturgiaNarration = { supported, toggle, stop };
