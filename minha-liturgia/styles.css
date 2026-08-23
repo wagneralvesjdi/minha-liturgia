@@ -284,6 +284,12 @@ main {
   margin: 1rem 0;
 }
 
+.narration-btn[data-narration-state="playing"],
+.narration-btn[data-narration-state="paused"] {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
 .offline-note {
   text-align: center;
   font-family: "Inter", system-ui, sans-serif;
