@@ -78,6 +78,7 @@ function renderSantosSearchResults(query) {
 }
 
 function santosStepShow(step) {
+  if (step !== 'hoje' && step !== 'leitura' && window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   ['hoje', 'meses', 'dias', 'indice', 'leitura'].forEach((s) => {
     const el2 = sel(`santos-step-${s}`);
     if (el2) el2.classList.toggle('hidden', s !== step);
@@ -85,6 +86,7 @@ function santosStepShow(step) {
 }
 
 function renderEntryCard(container, titulo, dataFormatada, entry) {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   container.innerHTML = '';
 
   const dataEl = document.createElement('p');
@@ -96,6 +98,17 @@ function renderEntryCard(container, titulo, dataFormatada, entry) {
   h.className = 'bible-title';
   h.textContent = titulo;
   container.appendChild(h);
+
+  if (entry && window.MinhaLiturgiaNarration) {
+    const narrateBtn = document.createElement('button');
+    narrateBtn.className = 'btn subtle narration-btn';
+    narrateBtn.dataset.narrationLabel = '🔊 Ouvir';
+    narrateBtn.textContent = '🔊 Ouvir';
+    narrateBtn.addEventListener('click', () => {
+      window.MinhaLiturgiaNarration.toggle(narrateBtn, () => `${titulo}. ${entry.tipo}. ${entry.bio} Reflexão. ${entry.reflexao}`);
+    });
+    container.appendChild(narrateBtn);
+  }
 
   if (!entry) {
     const p = document.createElement('p');

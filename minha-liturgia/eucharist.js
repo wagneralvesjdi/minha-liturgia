@@ -201,7 +201,11 @@ function renderPrayerList() {
   });
 }
 
+let currentPrayerIdx = null;
+
 function renderPrayerReader(idx) {
+  currentPrayerIdx = idx;
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   const prayer = EUCHARISTIC_PRAYERS[idx];
   eel('eucharistReaderTitle').textContent = prayer.titulo;
   const body = eel('eucharistBody');
@@ -230,6 +234,7 @@ function renderPrayerReader(idx) {
 }
 
 function backToPrayerList() {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   eel('eucharist-step-reader').classList.add('hidden');
   eel('eucharist-step-list').classList.remove('hidden');
 }
@@ -237,6 +242,14 @@ function backToPrayerList() {
 function initEucharist() {
   renderPrayerList();
   document.querySelectorAll('[data-back-to="eucharist-list"]').forEach((b) => b.addEventListener('click', backToPrayerList));
+  eel('narrateEucharistBtn').addEventListener('click', () => {
+    if (currentPrayerIdx === null || !window.MinhaLiturgiaNarration) return;
+    const prayer = EUCHARISTIC_PRAYERS[currentPrayerIdx];
+    const labels = { sacerdote: 'Sacerdote', assembleia: 'Assembleia' };
+    window.MinhaLiturgiaNarration.toggle(eel('narrateEucharistBtn'), () =>
+      `${prayer.titulo}. ${window.MinhaLiturgiaNarration.textFromBlocos(prayer.blocos, labels)}`
+    );
+  });
 }
 
 window.MinhaLiturgiaEucharist = { initEucharist };

@@ -718,6 +718,32 @@ function initShare() {
   });
 }
 
+/* ---------- Narração por trecho (ícone em cada card da liturgia) ---------- */
+
+function narrationTextForSection(section) {
+  const refrao = el('refrao-salmo').textContent.trim();
+  switch (section) {
+    case 'coleta': return `Oração coleta. ${el('txt-coleta').textContent}`;
+    case 'primeira': return `Primeira leitura, ${el('ref-primeira').textContent}. ${el('txt-primeira').textContent}`;
+    case 'salmo': return `Salmo, ${el('ref-salmo').textContent}. ${refrao ? refrao + ' ' : ''}${el('txt-salmo').textContent}`;
+    case 'segunda': return `Segunda leitura, ${el('ref-segunda').textContent}. ${el('txt-segunda').textContent}`;
+    case 'evangelho': return `Evangelho, ${el('ref-evangelho').textContent}. ${el('txt-evangelho').textContent}`;
+    case 'oferendas': return `Oração sobre as oferendas. ${el('txt-oferendas').textContent}`;
+    case 'comunhao': return `Oração final, pós-comunhão. ${el('txt-comunhao').textContent}`;
+    default: return '';
+  }
+}
+
+function initSectionNarration() {
+  document.querySelectorAll('.narrate-icon-btn[data-narrate]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (window.MinhaLiturgiaNarration) {
+        window.MinhaLiturgiaNarration.toggle(btn, () => narrationTextForSection(btn.dataset.narrate));
+      }
+    });
+  });
+}
+
 /* ---------- Tamanho da fonte ---------- */
 
 const FONT_SCALE_KEY = 'minhaLiturgia:fontScale';
@@ -812,6 +838,7 @@ function initServiceWorker() {
 document.addEventListener('DOMContentLoaded', () => {
   initFontSize();
   initShare();
+  initSectionNarration();
   initInstallPrompt();
   initServiceWorker();
   if (window.MinhaLiturgiaBible) window.MinhaLiturgiaBible.initBible();

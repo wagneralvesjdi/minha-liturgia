@@ -163,19 +163,19 @@
     <section id="liturgyBody" class="hidden">
 
       <article class="card section" id="sec-coleta">
-        <h3>Oração Coleta</h3>
+        <h3><span class="section-title">Oração Coleta</span><button class="narrate-icon-btn" data-narrate="coleta" data-narration-compact="true" aria-label="Ouvir esta oração">🔊</button></h3>
         <p class="prayer-text" id="txt-coleta"></p>
       </article>
 
       <article class="card section" id="sec-primeira">
-        <h3>Primeira Leitura</h3>
+        <h3><span class="section-title">Primeira Leitura</span><button class="narrate-icon-btn" data-narrate="primeira" data-narration-compact="true" aria-label="Ouvir esta leitura">🔊</button></h3>
         <div class="reading-options hidden" id="opts-primeira"></div>
         <p class="reference" id="ref-primeira"></p>
         <p class="reading-text" id="txt-primeira"></p>
       </article>
 
       <article class="card section" id="sec-salmo">
-        <h3>Salmo Responsorial</h3>
+        <h3><span class="section-title">Salmo Responsorial</span><button class="narrate-icon-btn" data-narrate="salmo" data-narration-compact="true" aria-label="Ouvir este salmo">🔊</button></h3>
         <div class="reading-options hidden" id="opts-salmo"></div>
         <p class="reference" id="ref-salmo"></p>
         <p class="refrain" id="refrao-salmo"></p>
@@ -183,26 +183,26 @@
       </article>
 
       <article class="card section hidden" id="sec-segunda">
-        <h3>Segunda Leitura</h3>
+        <h3><span class="section-title">Segunda Leitura</span><button class="narrate-icon-btn" data-narrate="segunda" data-narration-compact="true" aria-label="Ouvir esta leitura">🔊</button></h3>
         <div class="reading-options hidden" id="opts-segunda"></div>
         <p class="reference" id="ref-segunda"></p>
         <p class="reading-text" id="txt-segunda"></p>
       </article>
 
       <article class="card section" id="sec-evangelho">
-        <h3>Evangelho</h3>
+        <h3><span class="section-title">Evangelho</span><button class="narrate-icon-btn" data-narrate="evangelho" data-narration-compact="true" aria-label="Ouvir o evangelho">🔊</button></h3>
         <div class="reading-options hidden" id="opts-evangelho"></div>
         <p class="reference" id="ref-evangelho"></p>
         <p class="reading-text" id="txt-evangelho"></p>
       </article>
 
       <article class="card section hidden" id="sec-oferendas">
-        <h3>Oração sobre as Oferendas</h3>
+        <h3><span class="section-title">Oração sobre as Oferendas</span><button class="narrate-icon-btn" data-narrate="oferendas" data-narration-compact="true" aria-label="Ouvir esta oração">🔊</button></h3>
         <p class="prayer-text" id="txt-oferendas"></p>
       </article>
 
       <article class="card section hidden" id="sec-comunhao">
-        <h3>Oração Final <span class="hint">(Pós-Comunhão)</span></h3>
+        <h3><span class="section-title">Oração Final <span class="hint">(Pós-Comunhão)</span></span><button class="narrate-icon-btn" data-narrate="comunhao" data-narration-compact="true" aria-label="Ouvir esta oração">🔊</button></h3>
         <p class="prayer-text" id="txt-comunhao"></p>
       </article>
 
@@ -286,6 +286,7 @@
     <section id="eucharist-step-reader" class="bible-step hidden">
       <button class="back-link" data-back-to="eucharist-list">‹ Orações Eucarísticas</button>
       <h2 id="eucharistReaderTitle" class="bible-title"></h2>
+      <button id="narrateEucharistBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
       <article id="eucharistBody" class="card eucharist-body"></article>
     </section>
   </section>
@@ -320,6 +321,7 @@
       <div class="reader-header card">
         <h2 id="cicParagraphNumber" class="bible-title"></h2>
         <p id="cicParagraphBreadcrumb" class="cic-breadcrumb"></p>
+        <button id="narrateCicBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
       </div>
       <article class="card">
         <p id="cicParagraphText" class="reading-text"></p>
@@ -339,6 +341,7 @@
     <section id="hs-step-reader" class="bible-step hidden">
       <button class="back-link" data-back-to="hs-list">‹ Meses</button>
       <h2 id="hsReaderTitle" class="bible-title"></h2>
+      <button id="narrateHoraSantaBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
       <p id="hsIncompleteNote" class="status error hidden"></p>
       <article id="hsBody" class="card eucharist-body"></article>
     </section>
@@ -444,6 +447,7 @@
       <button class="back-link" data-back-to="oracoesdiversas-lista">‹ Orações Diversas</button>
       <article class="card">
         <h2 id="oracaoDiversaTitulo" class="bible-title"></h2>
+        <button id="narrateOracaoDiversaBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
         <p id="oracaoDiversaTexto" class="reading-text"></p>
         <p id="oracaoDiversaNota" class="eu-nota hidden"></p>
       </article>
@@ -490,6 +494,7 @@
       <button class="back-link" data-back-to="saomiguel-hesed">‹ Instituto Hesed</button>
       <article class="card">
         <h2 id="saoMiguelTitulo" class="bible-title"></h2>
+        <button id="narrateSaoMiguelBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
         <p id="saoMiguelTexto" class="reading-text"></p>
         <p id="saoMiguelNota" class="eu-nota hidden"></p>
       </article>
@@ -518,6 +523,7 @@
       <button class="back-link" data-back-to="saomiguel-gilson">‹ Frei Gilson</button>
       <article class="card">
         <h2 id="gilsonOracaoTitulo" class="bible-title"></h2>
+        <button id="narrateGilsonOracaoBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
         <p id="gilsonOracaoTexto" class="reading-text"></p>
         <p id="gilsonOracaoNota" class="eu-nota hidden"></p>
       </article>
@@ -535,6 +541,7 @@
       <article class="card">
         <h2 id="quaresmaPassagemTitulo" class="bible-title"></h2>
         <p id="quaresmaPassagemRef" class="reference"></p>
+        <button id="narrateQuaresmaPassagemBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
         <p id="quaresmaPassagemStatus" class="status hidden"></p>
         <div id="quaresmaPassagemVersos" class="verse-list"></div>
       </article>
@@ -555,6 +562,7 @@
 
     <article id="promessaResultado" class="card section hidden">
       <p class="reference" id="promessaRef"></p>
+      <button id="narratePromessaBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
       <p id="promessaTexto" class="reading-text"></p>
       <h3>Reflexão</h3>
       <p id="promessaReflexao" class="prayer-text"></p>

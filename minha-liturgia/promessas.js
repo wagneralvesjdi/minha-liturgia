@@ -85,6 +85,7 @@ function referenciaTexto(p) {
 }
 
 async function mostrarPromessa() {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   const p = sortearPromessa();
   const statusEl = prel('promessaStatus');
   const resultado = prel('promessaResultado');
@@ -115,6 +116,16 @@ function initPromessas() {
   if (btn) btn.addEventListener('click', mostrarPromessa);
   const btnOutra = prel('promessaOutraBtn');
   if (btnOutra) btnOutra.addEventListener('click', mostrarPromessa);
+  const narrateBtn = prel('narratePromessaBtn');
+  if (narrateBtn) {
+    narrateBtn.addEventListener('click', () => {
+      if (window.MinhaLiturgiaNarration) {
+        window.MinhaLiturgiaNarration.toggle(narrateBtn, () =>
+          `${prel('promessaRef').textContent}. ${prel('promessaTexto').textContent} Reflexão. ${prel('promessaReflexao').textContent}`
+        );
+      }
+    });
+  }
 }
 
 window.MinhaLiturgiaPromessas = { initPromessas };

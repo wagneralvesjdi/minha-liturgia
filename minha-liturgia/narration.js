@@ -24,9 +24,43 @@
   function setLabel(btn, state) {
     if (!btn) return;
     btn.dataset.narrationState = state;
-    if (state === 'playing') btn.textContent = '⏸ Pausar narração';
-    else if (state === 'paused') btn.textContent = '▶ Continuar narração';
-    else btn.textContent = btn.dataset.narrationLabel || '🔊 Ouvir';
+    const compact = btn.dataset.narrationCompact === 'true';
+    if (state === 'playing') btn.textContent = compact ? '⏸' : '⏸ Pausar narração';
+    else if (state === 'paused') btn.textContent = compact ? '▶' : '▶ Continuar narração';
+    else btn.textContent = compact ? '🔊' : (btn.dataset.narrationLabel || '🔊 Ouvir');
+  }
+
+  // Alguns motores de TTS do Android soletram letra por letra palavras em
+  // CAIXA ALTA. Normaliza trechos assim (por frase, pra não mexer no que já
+  // está em minúsculas) antes de mandar pro speechSynthesis.
+  function toSpeechCase(s) {
+    if (!s) return s;
+    return s.replace(/[^.!?]+[.!?]*/g, (sentence) => {
+      const letters = sentence.replace(/[^A-Za-zÀ-ÿ]/g, '');
+      const upper = letters.replace(/[^A-ZÀ-Þ]/g, '');
+      if (letters.length >= 6 && upper.length / letters.length > 0.7) {
+        const lower = sentence.toLowerCase();
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+      }
+      return sentence;
+    });
+  }
+
+  function textFrom(el) {
+    if (!el) return '';
+    return toSpeechCase(el.textContent.replace(/\s+/g, ' ').trim());
+  }
+
+  function textFromBlocos(blocos, labelMap) {
+    if (!Array.isArray(blocos)) return '';
+    return blocos
+      .map((b) => {
+        const texto = toSpeechCase((b.texto || '').trim());
+        const label = labelMap && labelMap[b.tipo];
+        return label ? `${label}: ${texto}` : texto;
+      })
+      .filter(Boolean)
+      .join(' ');
   }
 
   function stop() {
@@ -86,5 +120,5 @@
     }
   }
 
-  window.MinhaLiturgiaNarration = { supported, toggle, stop };
+  window.MinhaLiturgiaNarration = { supported, toggle, stop, textFrom, textFromBlocos, toSpeechCase };
 })();

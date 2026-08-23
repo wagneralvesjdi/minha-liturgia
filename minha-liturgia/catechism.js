@@ -55,6 +55,7 @@ function searchCatechism(query) {
 /* ---------- Renderização ---------- */
 
 function cicStepShow(step) {
+  if (step !== 'paragrafo' && window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   ['busca', 'grupos', 'grupo', 'paragrafo'].forEach((s) => {
     const el = cel(`cic-step-${s}`);
     if (el) el.classList.toggle('hidden', s !== step);
@@ -246,6 +247,7 @@ function setCicNote(msg, isError) {
 }
 
 function openParagraph(numero) {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   cicStepShow('paragrafo');
   cel('cicParagraphNumber').textContent = `§ ${numero}`;
 
@@ -273,6 +275,14 @@ function initCatechism() {
     b.addEventListener('click', () => {
       if (currentGroupSlug) openGroup(currentGroupSlug);
     });
+  });
+
+  cel('narrateCicBtn').addEventListener('click', () => {
+    if (window.MinhaLiturgiaNarration) {
+      window.MinhaLiturgiaNarration.toggle(cel('narrateCicBtn'), () =>
+        `${cel('cicParagraphNumber').textContent}. ${window.MinhaLiturgiaNarration.textFrom(cel('cicParagraphText'))}`
+      );
+    }
   });
 }
 

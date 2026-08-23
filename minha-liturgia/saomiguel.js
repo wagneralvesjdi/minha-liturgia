@@ -216,7 +216,11 @@ function parsePassagemPrimaria(passagemStr) {
   return { livro, capitulo, versIni: Math.min(...nums), versFim: Math.max(...nums) };
 }
 
+let ultimaPassagemLida = null;
+
 async function abrirPassagemDedicada(item, voltarStepId) {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
+  ultimaPassagemLida = null;
   passagemVoltarStep = voltarStepId;
   const ref = item.livro
     ? { livro: item.livro, capitulo: item.capitulo, versIni: item.versIni, versFim: item.versFim }
@@ -244,6 +248,7 @@ async function abrirPassagemDedicada(item, voltarStepId) {
   }
 
   statusEl.classList.add('hidden');
+  ultimaPassagemLida = resultado;
   smel('quaresmaPassagemRef').textContent = `${resultado.livroNome} ${resultado.capitulo}`;
   resultado.versiculos.forEach((v) => {
     const p = document.createElement('p');
@@ -267,6 +272,7 @@ function renderOracoesList(listaId, oracoes, tituloId, textoId, notaId, stepList
     btn.className = 'book-btn';
     btn.innerHTML = `<span>${oracao.titulo}</span>`;
     btn.addEventListener('click', () => {
+      if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
       smel(tituloId).textContent = oracao.titulo;
       smel(textoId).textContent = oracao.texto;
       const notaEl = smel(notaId);
@@ -441,6 +447,7 @@ function initSaoMiguel() {
 
   document.querySelectorAll('[data-back-to="saomiguel-hesed"]').forEach((b) => {
     b.addEventListener('click', () => {
+      if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
       smel('saomiguel-step-hesed-leitura').classList.add('hidden');
       smel('saomiguel-step-hesed-roteiro').classList.add('hidden');
       smel('saomiguel-step-hesed').classList.remove('hidden');
@@ -449,6 +456,7 @@ function initSaoMiguel() {
 
   document.querySelectorAll('[data-back-to="saomiguel-gilson"]').forEach((b) => {
     b.addEventListener('click', () => {
+      if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
       smel('saomiguel-step-gilson-leitura').classList.add('hidden');
       smel('saomiguel-step-gilson-roteiro').classList.add('hidden');
       smel('saomiguel-step-gilson').classList.remove('hidden');
@@ -465,8 +473,32 @@ function initSaoMiguel() {
   });
 
   smel('quaresmaPassagemVoltar').addEventListener('click', () => {
+    if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
     smel('saomiguel-step-passagem').classList.add('hidden');
     smel(passagemVoltarStep).classList.remove('hidden');
+  });
+
+  smel('narrateSaoMiguelBtn').addEventListener('click', () => {
+    if (window.MinhaLiturgiaNarration) {
+      window.MinhaLiturgiaNarration.toggle(smel('narrateSaoMiguelBtn'), () =>
+        `${smel('saoMiguelTitulo').textContent}. ${smel('saoMiguelTexto').textContent}`
+      );
+    }
+  });
+  smel('narrateGilsonOracaoBtn').addEventListener('click', () => {
+    if (window.MinhaLiturgiaNarration) {
+      window.MinhaLiturgiaNarration.toggle(smel('narrateGilsonOracaoBtn'), () =>
+        `${smel('gilsonOracaoTitulo').textContent}. ${smel('gilsonOracaoTexto').textContent}`
+      );
+    }
+  });
+  smel('narrateQuaresmaPassagemBtn').addEventListener('click', () => {
+    if (window.MinhaLiturgiaNarration) {
+      window.MinhaLiturgiaNarration.toggle(smel('narrateQuaresmaPassagemBtn'), () => {
+        if (!ultimaPassagemLida) return '';
+        return `${ultimaPassagemLida.livroNome} ${ultimaPassagemLida.capitulo}. ${ultimaPassagemLida.versiculos.map((v) => v.texto).join(' ')}`;
+      });
+    }
   });
 }
 

@@ -24,7 +24,11 @@ function renderMonthList() {
   });
 }
 
+let currentMesIdx = null;
+
 function openMonth(idx) {
+  currentMesIdx = idx;
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   const mes = HORA_SANTA_MESES[idx];
   hsel('hsReaderTitle').textContent = `Hora Santa — ${mes.mes}`;
 
@@ -59,6 +63,7 @@ function openMonth(idx) {
 }
 
 function backToMonthList() {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   hsel('hs-step-reader').classList.add('hidden');
   hsel('hs-step-list').classList.remove('hidden');
 }
@@ -66,6 +71,14 @@ function backToMonthList() {
 function initHoraSanta() {
   renderMonthList();
   document.querySelectorAll('[data-back-to="hs-list"]').forEach((b) => b.addEventListener('click', backToMonthList));
+  hsel('narrateHoraSantaBtn').addEventListener('click', () => {
+    if (currentMesIdx === null || !window.MinhaLiturgiaNarration) return;
+    const mes = HORA_SANTA_MESES[currentMesIdx];
+    const labels = { sacerdote: 'Padre', assembleia: 'Povo' };
+    window.MinhaLiturgiaNarration.toggle(hsel('narrateHoraSantaBtn'), () =>
+      `Hora Santa de ${mes.mes}. ${window.MinhaLiturgiaNarration.textFromBlocos(mes.blocos, labels)}`
+    );
+  });
 }
 
 window.MinhaLiturgiaHoraSanta = { initHoraSanta };

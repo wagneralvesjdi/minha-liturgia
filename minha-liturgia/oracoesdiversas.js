@@ -167,6 +167,7 @@ function openOracaoDiversa(idx) {
   const o = ORACOES_DIVERSAS[idx];
   if (!o) return;
 
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   oel('oracaoDiversaTitulo').textContent = o.titulo;
   oel('oracaoDiversaTexto').textContent = o.texto;
   const notaEl = oel('oracaoDiversaNota');
@@ -181,9 +182,17 @@ function initOracoesDiversas() {
   renderOracoesDiversasList();
   document.querySelectorAll('[data-back-to="oracoesdiversas-lista"]').forEach((b) => {
     b.addEventListener('click', () => {
+      if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
       oel('oracoesdiversas-step-leitura').classList.add('hidden');
       oel('oracoesdiversas-step-lista').classList.remove('hidden');
     });
+  });
+  oel('narrateOracaoDiversaBtn').addEventListener('click', () => {
+    if (window.MinhaLiturgiaNarration) {
+      window.MinhaLiturgiaNarration.toggle(oel('narrateOracaoDiversaBtn'), () =>
+        `${oel('oracaoDiversaTitulo').textContent}. ${oel('oracaoDiversaTexto').textContent}`
+      );
+    }
   });
 }
 

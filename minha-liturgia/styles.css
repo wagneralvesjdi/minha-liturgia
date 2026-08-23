@@ -220,6 +220,26 @@ main {
   color: var(--violet-dark);
   border-bottom: 2px solid var(--border);
   padding-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.narrate-icon-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.2rem 0.35rem;
+  border-radius: 8px;
+  color: var(--muted);
+}
+.narrate-icon-btn[data-narration-state="playing"],
+.narrate-icon-btn[data-narration-state="paused"] {
+  color: var(--gold);
 }
 
 .hint {
