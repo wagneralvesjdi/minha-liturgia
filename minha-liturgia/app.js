@@ -276,6 +276,7 @@ function setSection(sectionId, visible) {
 }
 
 let lastRenderedText = '';
+let lastNarrationText = '';
 let lastRenderedDate = null;
 let lastApiData = null;
 let lastLiturgicalInfo = null;
@@ -324,6 +325,7 @@ function renderReadings(date, apiData, info) {
   el('txt-evangelho').innerHTML = readingBlockHTML(evangelho) || 'Evangelho não disponível para esta data.';
 
   lastRenderedText = buildShareText(date, apiData, info);
+  lastNarrationText = buildNarrationText(date, apiData, info);
 }
 
 function render(date, apiData) {
@@ -410,6 +412,54 @@ function buildShareText(date, apiData, info) {
   lines.push('Compartilhado pelo app Minha Liturgia 🙏');
 
   return lines.join('\n');
+}
+
+/* Texto sem emojis, sem MAIÚSCULAS e com frases naturais — alguns motores de
+   TTS do Android leem palavras em CAIXA ALTA soletrando letra por letra, e
+   podem travar silenciosamente em certos emojis. */
+function buildNarrationText(date, apiData, info) {
+  const oracoes = apiData.oracoes || {};
+  const leituras = apiData.leituras || {};
+  const primeira = pickOption(leituras.primeiraLeitura, selectedReadingIndex.primeira);
+  const salmo = pickOption(leituras.salmo, selectedReadingIndex.salmo);
+  const segunda = pickOption(leituras.segundaLeitura, selectedReadingIndex.segunda);
+  const evangelho = pickOption(leituras.evangelho, selectedReadingIndex.evangelho);
+
+  const partes = [];
+  partes.push(`Liturgia de ${formatDateBR(date)}.`);
+  if (apiData.liturgia) partes.push(apiData.liturgia + '.');
+  partes.push(`${info.liturgicalYearLabel}.`);
+
+  partes.push('Oração coleta.');
+  partes.push(oracoes.coleta || '');
+
+  if (primeira) {
+    partes.push(`Primeira leitura, ${primeira.referencia || ''}.`);
+    partes.push(readingBlock(primeira));
+  }
+  if (salmo) {
+    partes.push(`Salmo, ${salmo.referencia || ''}.`);
+    if (salmo.refrao) partes.push(salmo.refrao);
+    partes.push(salmo.texto || '');
+  }
+  if (segunda) {
+    partes.push(`Segunda leitura, ${segunda.referencia || ''}.`);
+    partes.push(readingBlock(segunda));
+  }
+  if (evangelho) {
+    partes.push(`Evangelho, ${evangelho.referencia || ''}.`);
+    partes.push(readingBlock(evangelho));
+  }
+  if (oracoes.oferendas) {
+    partes.push('Oração sobre as oferendas.');
+    partes.push(oracoes.oferendas);
+  }
+  if (oracoes.comunhao) {
+    partes.push('Oração final, pós-comunhão.');
+    partes.push(oracoes.comunhao);
+  }
+
+  return partes.filter(Boolean).join(' ');
 }
 
 /* ---------- Mensagem do Dia (tela inicial) ---------- */
@@ -663,7 +713,7 @@ function initShare() {
   el('copyBtn').addEventListener('click', copyLiturgy);
   el('narrateLiturgyBtn').addEventListener('click', () => {
     if (window.MinhaLiturgiaNarration) {
-      window.MinhaLiturgiaNarration.toggle(el('narrateLiturgyBtn'), () => lastRenderedText);
+      window.MinhaLiturgiaNarration.toggle(el('narrateLiturgyBtn'), () => lastNarrationText);
     }
   });
 }
