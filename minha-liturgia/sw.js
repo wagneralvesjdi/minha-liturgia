@@ -1,4 +1,4 @@
-const CACHE_NAME = 'minha-liturgia-v53';
+const CACHE_NAME = 'minha-liturgia-v54';
 const APP_SHELL = [
   './',
   './index.html',
