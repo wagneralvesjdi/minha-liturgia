@@ -517,6 +517,8 @@ let saoMiguelInitialized = false;
 let promessasInitialized = false;
 
 function showView(name) {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
+
   ['home', 'liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'promessas'].forEach((v) => {
     const section = el(`view-${v}`);
     if (section) section.classList.toggle('hidden', v !== name);
@@ -659,6 +661,11 @@ async function copyLiturgy() {
 function initShare() {
   el('shareBtn').addEventListener('click', shareLiturgy);
   el('copyBtn').addEventListener('click', copyLiturgy);
+  el('narrateLiturgyBtn').addEventListener('click', () => {
+    if (window.MinhaLiturgiaNarration) {
+      window.MinhaLiturgiaNarration.toggle(el('narrateLiturgyBtn'), () => lastRenderedText);
+    }
+  });
 }
 
 /* ---------- Tamanho da fonte ---------- */

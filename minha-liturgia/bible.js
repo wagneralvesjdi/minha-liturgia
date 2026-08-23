@@ -47,6 +47,7 @@ function loadBible() {
 }
 
 function bibleStepShow(step) {
+  if (step !== 'reader' && window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   ['testament', 'search', 'books', 'chapters', 'reader'].forEach((s) => {
     const el = bel(`bible-step-${s}`);
     if (el) el.classList.toggle('hidden', s !== step);
@@ -155,6 +156,7 @@ function selectBook(idx) {
 }
 
 function selectChapter(capitulo) {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   currentChapter = capitulo;
   bel('readerTitle').textContent = `${currentBook.nome} ${capitulo.capitulo}`;
   const list = bel('verseList');
@@ -173,6 +175,12 @@ function selectChapter(capitulo) {
   bel('verseJumpInput').value = '';
   bibleStepShow('reader');
   list.scrollIntoView({ block: 'start' });
+}
+
+function narrateChapterText() {
+  if (!currentBook || !currentChapter) return '';
+  const corpo = currentChapter.versiculos.map((v) => v.texto).join(' ');
+  return `${currentBook.nome}, capítulo ${currentChapter.capitulo}. ${corpo}`;
 }
 
 function jumpToVerse() {
@@ -206,6 +214,12 @@ function initBible() {
 
   bel('verseJumpBtn').addEventListener('click', jumpToVerse);
   bel('verseJumpInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') jumpToVerse(); });
+
+  bel('narrateBibleBtn').addEventListener('click', () => {
+    if (window.MinhaLiturgiaNarration) {
+      window.MinhaLiturgiaNarration.toggle(bel('narrateBibleBtn'), narrateChapterText);
+    }
+  });
 
   const searchInput = bel('bibleSearchInput');
   searchInput.addEventListener('input', () => {
