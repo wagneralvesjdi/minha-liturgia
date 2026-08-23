@@ -207,6 +207,7 @@
       </article>
 
       <section class="share-bar">
+        <button id="narrateLiturgyBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir a liturgia">🔊 Ouvir a liturgia</button>
         <button id="shareBtn" class="btn primary">Compartilhar liturgia de hoje</button>
         <button id="copyBtn" class="btn subtle">Copiar texto</button>
         <button id="goHomilia" class="btn subtle">Preparar homilia (15 min)</button>
@@ -262,6 +263,7 @@
       <button class="back-link" data-back-to="chapters">‹ Capítulos</button>
       <div class="reader-header card">
         <h2 id="readerTitle" class="bible-title"></h2>
+        <button id="narrateBibleBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir capítulo">🔊 Ouvir capítulo</button>
         <div class="verse-jump">
           <label for="verseJumpInput">Ir para o versículo</label>
           <input id="verseJumpInput" type="number" min="1" inputmode="numeric" placeholder="nº" />
@@ -591,6 +593,7 @@
 
 <div id="pdfPrintArea" class="pdf-doc"></div>
 
+<script src="narration.js"></script>
 <script src="bible.js"></script>
 <script src="eucharist.js"></script>
 <script src="catechism.js"></script>
