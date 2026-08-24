@@ -238,6 +238,12 @@ function highlightVerseNumbers(texto) {
   return escapeHtml(texto).replace(VERSE_NUM_RE, (m, pre, num) => `${pre}<span class="verse-num">${num}</span>`);
 }
 
+/* Pra narração, os números de versículo são só ruído — tira eles de vez
+   em vez de destacar, pra sair uma leitura corrida e limpa. */
+function stripVerseNumbers(texto) {
+  return (texto || '').replace(VERSE_NUM_RE, (m, pre) => pre);
+}
+
 function readingBlockHTML(item) {
   if (!item) return '';
   const parts = [];
@@ -277,6 +283,7 @@ function setSection(sectionId, visible) {
 
 let lastRenderedText = '';
 let lastNarrationText = '';
+let lastNarrationParts = {};
 let lastRenderedDate = null;
 let lastApiData = null;
 let lastLiturgicalInfo = null;
@@ -417,6 +424,14 @@ function buildShareText(date, apiData, info) {
 /* Texto sem emojis, sem MAIÚSCULAS e com frases naturais — alguns motores de
    TTS do Android leem palavras em CAIXA ALTA soletrando letra por letra, e
    podem travar silenciosamente em certos emojis. */
+function narrationReadingBlock(item) {
+  if (!item) return '';
+  const parts = [];
+  if (item.titulo) parts.push(stripVerseNumbers(item.titulo.trim()));
+  if (item.texto) parts.push(stripVerseNumbers(item.texto.trim()));
+  return parts.join(' ');
+}
+
 function buildNarrationText(date, apiData, info) {
   const oracoes = apiData.oracoes || {};
   const leituras = apiData.leituras || {};
@@ -425,39 +440,28 @@ function buildNarrationText(date, apiData, info) {
   const segunda = pickOption(leituras.segundaLeitura, selectedReadingIndex.segunda);
   const evangelho = pickOption(leituras.evangelho, selectedReadingIndex.evangelho);
 
-  const partes = [];
-  partes.push(`Liturgia de ${formatDateBR(date)}.`);
-  if (apiData.liturgia) partes.push(apiData.liturgia + '.');
-  partes.push(`${info.liturgicalYearLabel}.`);
+  lastNarrationParts = {
+    coleta: oracoes.coleta ? `Oração coleta. ${oracoes.coleta}` : '',
+    primeira: primeira ? `Primeira leitura, ${primeira.referencia || ''}. ${narrationReadingBlock(primeira)}` : '',
+    salmo: salmo ? `Salmo, ${salmo.referencia || ''}. ${salmo.refrao ? stripVerseNumbers(salmo.refrao) + ' ' : ''}${stripVerseNumbers(salmo.texto || '')}` : '',
+    segunda: segunda ? `Segunda leitura, ${segunda.referencia || ''}. ${narrationReadingBlock(segunda)}` : '',
+    evangelho: evangelho ? `Evangelho, ${evangelho.referencia || ''}. ${narrationReadingBlock(evangelho)}` : '',
+    oferendas: oracoes.oferendas ? `Oração sobre as oferendas. ${oracoes.oferendas}` : '',
+    comunhao: oracoes.comunhao ? `Oração final, pós-comunhão. ${oracoes.comunhao}` : '',
+  };
 
-  partes.push('Oração coleta.');
-  partes.push(oracoes.coleta || '');
-
-  if (primeira) {
-    partes.push(`Primeira leitura, ${primeira.referencia || ''}.`);
-    partes.push(readingBlock(primeira));
-  }
-  if (salmo) {
-    partes.push(`Salmo, ${salmo.referencia || ''}.`);
-    if (salmo.refrao) partes.push(salmo.refrao);
-    partes.push(salmo.texto || '');
-  }
-  if (segunda) {
-    partes.push(`Segunda leitura, ${segunda.referencia || ''}.`);
-    partes.push(readingBlock(segunda));
-  }
-  if (evangelho) {
-    partes.push(`Evangelho, ${evangelho.referencia || ''}.`);
-    partes.push(readingBlock(evangelho));
-  }
-  if (oracoes.oferendas) {
-    partes.push('Oração sobre as oferendas.');
-    partes.push(oracoes.oferendas);
-  }
-  if (oracoes.comunhao) {
-    partes.push('Oração final, pós-comunhão.');
-    partes.push(oracoes.comunhao);
-  }
+  const partes = [
+    `Liturgia de ${formatDateBR(date)}.`,
+    apiData.liturgia ? apiData.liturgia + '.' : '',
+    `${info.liturgicalYearLabel}.`,
+    lastNarrationParts.coleta,
+    lastNarrationParts.primeira,
+    lastNarrationParts.salmo,
+    lastNarrationParts.segunda,
+    lastNarrationParts.evangelho,
+    lastNarrationParts.oferendas,
+    lastNarrationParts.comunhao,
+  ];
 
   return partes.filter(Boolean).join(' ');
 }
@@ -721,17 +725,7 @@ function initShare() {
 /* ---------- Narração por trecho (ícone em cada card da liturgia) ---------- */
 
 function narrationTextForSection(section) {
-  const refrao = el('refrao-salmo').textContent.trim();
-  switch (section) {
-    case 'coleta': return `Oração coleta. ${el('txt-coleta').textContent}`;
-    case 'primeira': return `Primeira leitura, ${el('ref-primeira').textContent}. ${el('txt-primeira').textContent}`;
-    case 'salmo': return `Salmo, ${el('ref-salmo').textContent}. ${refrao ? refrao + ' ' : ''}${el('txt-salmo').textContent}`;
-    case 'segunda': return `Segunda leitura, ${el('ref-segunda').textContent}. ${el('txt-segunda').textContent}`;
-    case 'evangelho': return `Evangelho, ${el('ref-evangelho').textContent}. ${el('txt-evangelho').textContent}`;
-    case 'oferendas': return `Oração sobre as oferendas. ${el('txt-oferendas').textContent}`;
-    case 'comunhao': return `Oração final, pós-comunhão. ${el('txt-comunhao').textContent}`;
-    default: return '';
-  }
+  return lastNarrationParts[section] || '';
 }
 
 function initSectionNarration() {
