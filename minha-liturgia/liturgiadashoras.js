@@ -6,7 +6,7 @@
    inspirada na Liturgia das Horas, usando salmos e cânticos da nossa
    própria Bíblia (Ave Maria) e orações tradicionais de domínio público
    (Pai Nosso, Salve Rainha). Quem quiser o Ofício Divino oficial completo
-   pode usar o app da CNBB ou o site liturgiadashoras.online. */
+   pode usar o aplicativo oficial da CNBB. */
 
 const PAI_NOSSO = 'Pai Nosso que estais nos céus, santificado seja o vosso nome; venha a nós o vosso reino; seja feita a vossa vontade, assim na terra como no céu. O pão nosso de cada dia nos dai hoje; perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido; e não nos deixeis cair em tentação; mas livrai-nos do mal. Amém.';
 
