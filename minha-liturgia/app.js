@@ -569,11 +569,12 @@ let santaseInitialized = false;
 let oracoesDiversasInitialized = false;
 let saoMiguelInitialized = false;
 let promessasInitialized = false;
+let liturgiaDasHorasInitialized = false;
 
 function showView(name) {
   if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
 
-  ['home', 'liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'promessas'].forEach((v) => {
+  ['home', 'liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas'].forEach((v) => {
     const section = el(`view-${v}`);
     if (section) section.classList.toggle('hidden', v !== name);
   });
@@ -636,6 +637,12 @@ function showView(name) {
       saoMiguelInitialized = true;
       window.MinhaLiturgiaSaoMiguel.initSaoMiguel();
     }
+  } else if (name === 'liturgiadashoras') {
+    subtitle.textContent = 'Oração dos 5 momentos do dia';
+    if (!liturgiaDasHorasInitialized && window.MinhaLiturgiaDasHoras) {
+      liturgiaDasHorasInitialized = true;
+      window.MinhaLiturgiaDasHoras.initLiturgiaDasHoras();
+    }
   } else if (name === 'promessas') {
     subtitle.textContent = 'Um versículo e uma breve reflexão';
     if (!promessasInitialized && window.MinhaLiturgiaPromessas) {
@@ -663,6 +670,7 @@ function initRouter() {
   el('goSantaSe').addEventListener('click', () => showView('santase'));
   el('goOracoesDiversas').addEventListener('click', () => showView('oracoesdiversas'));
   el('goSaoMiguel').addEventListener('click', () => showView('saomiguel'));
+  el('goLiturgiaDasHoras').addEventListener('click', () => showView('liturgiadashoras'));
   el('goPromessas').addEventListener('click', () => showView('promessas'));
   el('dayVerseCard').addEventListener('click', () => showView('liturgia'));
   el('homeBtn').addEventListener('click', () => showView('home'));
@@ -671,7 +679,7 @@ function initRouter() {
   });
 
   const initial = location.hash.replace('#/', '').replace('#', '');
-  const validViews = ['liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'promessas'];
+  const validViews = ['liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas'];
   showView(validViews.includes(initial) ? initial : 'home');
 }
 

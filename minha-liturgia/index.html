@@ -83,6 +83,13 @@
           <span class="home-card-compact-title">Santo Terço</span>
         </button>
 
+        <button id="goLiturgiaDasHoras" class="home-card-compact">
+          <span class="home-card-compact-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M24 13v11l8 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 4v4M24 40v4M4 24h4M40 24h4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          </span>
+          <span class="home-card-compact-title">Liturgia das Horas</span>
+        </button>
+
         <button id="goHoraSanta" class="home-card-compact">
           <span class="home-card-compact-icon" aria-hidden="true">
             <img src="icons/home/hora-santa.png" alt="" loading="lazy" />
@@ -548,6 +555,28 @@
     </section>
   </section>
 
+  <!-- ===== LITURGIA DAS HORAS ===== -->
+  <section id="view-liturgiadashoras" class="view hidden">
+    <button class="back-link" data-back-to="home">‹ Início</button>
+
+    <section id="lh-step-home" class="bible-step">
+      <article class="card">
+        <p class="fieis-note">Uma estrutura própria de oração para os 5 momentos do dia, inspirada na Liturgia das Horas — com salmos e cânticos da nossa Bíblia (Ave Maria) e orações tradicionais. Não é o Ofício Divino oficial (esse tem tradução própria, protegida pela CNBB/Paulus); para o Ofício completo, use o app da CNBB ou o site liturgiadashoras.online.</p>
+      </article>
+      <div id="lhHorasList" class="book-list"></div>
+    </section>
+
+    <section id="lh-step-leitura" class="bible-step hidden">
+      <button class="back-link" data-back-to="lh-home">‹ Liturgia das Horas</button>
+      <div class="reader-header card">
+        <h2 id="lhReaderTitle" class="bible-title"></h2>
+        <p id="lhReaderSubtitle" class="fieis-note"></p>
+        <button id="narrateLhBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
+      </div>
+      <div id="lhBody"></div>
+    </section>
+  </section>
+
   <!-- ===== PRECIOSAS PROMESSAS ===== -->
   <section id="view-promessas" class="view hidden">
     <button class="back-link" data-back-to="home">‹ Início</button>
@@ -612,6 +641,7 @@
 <script src="santase.js"></script>
 <script src="oracoesdiversas.js"></script>
 <script src="saomiguel.js"></script>
+<script src="liturgiadashoras.js"></script>
 <script src="promessas.js"></script>
 <script src="pdf.js"></script>
 <script src="app.js"></script>
