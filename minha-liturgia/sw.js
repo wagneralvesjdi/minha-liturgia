@@ -1,4 +1,4 @@
-const CACHE_NAME = 'minha-liturgia-v57';
+const CACHE_NAME = 'minha-liturgia-v58';
 const APP_SHELL = [
   './',
   './index.html',
@@ -36,6 +36,7 @@ const APP_SHELL = [
   './icons/home/preciosas-promessas.png',
   './icons/home/catecismo.png',
   './icons/home/santa-se.png',
+  './icons/home/liturgia-das-horas.png',
 ];
 
 // Conteúdo grande e praticamente estático: cache-first para não baixar de novo a cada visita.
