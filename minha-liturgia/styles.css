@@ -589,6 +589,20 @@ footer a { color: var(--violet-dark); }
 }
 .eu-misterio .eu-nota { display: block; font-weight: 400; margin-top: 0.3rem; }
 
+.bloco-atual {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.rosario-guiado-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1rem;
+}
+.rosario-guiado-nav .btn { flex: 1; }
+
 .eu-nota {
   font-family: "Inter", system-ui, sans-serif;
   font-size: 0.8rem;
@@ -852,3 +866,66 @@ body.pdf-print-mode #pdfPrintArea {
   color: inherit;
   resize: vertical;
 }
+
+/* ---------- Favoritos ---------- */
+
+.favorito-ativo {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ---------- Lembretes ---------- */
+
+.lembrete-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.7rem;
+}
+.lembrete-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.lembrete-hora {
+  font: inherit;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.9rem;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.lembrete-toggle {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.lembrete-toggle input { opacity: 0; width: 0; height: 0; }
+.lembrete-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.lembrete-toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: var(--text);
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+.lembrete-toggle input:checked + .lembrete-toggle-slider { background: var(--gold); }
+.lembrete-toggle input:checked + .lembrete-toggle-slider::before { transform: translateX(18px); }

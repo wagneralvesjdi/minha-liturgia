@@ -1,4 +1,4 @@
-const CACHE_NAME = 'minha-liturgia-v58';
+const CACHE_NAME = 'minha-liturgia-v59';
 const APP_SHELL = [
   './',
   './index.html',
@@ -18,6 +18,8 @@ const APP_SHELL = [
   './saomiguel.js',
   './liturgiadashoras.js',
   './promessas.js',
+  './favoritos.js',
+  './lembretes.js',
   './pdf.js',
   './manifest.json',
   './icons/icon-32.png',
@@ -87,5 +89,17 @@ self.addEventListener('fetch', (event) => {
         return res;
       })
       .catch(() => caches.match(req))
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if ('focus' in client) return client.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow('./');
+    })
   );
 });

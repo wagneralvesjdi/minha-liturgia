@@ -145,6 +145,67 @@
         </button>
       </div>
     </div>
+
+    <div class="home-group">
+      <p class="home-group-label">Pessoal</p>
+      <div class="home-grid">
+        <button id="goFavoritos" class="home-card-compact">
+          <span class="home-card-compact-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M24 6l4 8 9 1-6.5 6.5L32 30l-8-4-8 4 1.5-8.5L10 15l9-1 5-8Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="home-card-compact-title">Meus Favoritos</span>
+        </button>
+
+        <button id="goLembretes" class="home-card-compact">
+          <span class="home-card-compact-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M24 6a10 10 0 0 0-10 10v6l-4 8h28l-4-8v-6A10 10 0 0 0 24 6Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M20 36a4 4 0 0 0 8 0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          </span>
+          <span class="home-card-compact-title">Lembretes de Oração</span>
+        </button>
+
+        <button id="goSugestao" class="home-card-compact">
+          <span class="home-card-compact-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="28" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M7 13l17 13L41 13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="home-card-compact-title">Enviar Sugestão</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MEUS FAVORITOS ===== -->
+  <section id="view-favoritos" class="view hidden">
+    <button class="back-link" data-back-to="home">‹ Início</button>
+
+    <section id="favoritos-step-lista" class="bible-step">
+      <p class="fieis-note">Orações, leituras e reflexões que você marcou com ☆ Favoritar em qualquer parte do app ficam salvas aqui, no seu aparelho.</p>
+      <p id="favoritosVazio" class="status hidden">Você ainda não favoritou nada. Toque em "☆ Favoritar" em uma oração ou leitura pra guardá-la aqui.</p>
+      <div id="favoritosList" class="book-list"></div>
+    </section>
+
+    <section id="favoritos-step-leitura" class="bible-step hidden">
+      <button class="back-link" data-back-to="favoritos-lista">‹ Meus Favoritos</button>
+      <article class="card">
+        <h2 id="favoritoLeituraTitulo" class="bible-title"></h2>
+        <p id="favoritoLeituraSubtitulo" class="fieis-note"></p>
+        <button id="narrateFavoritoBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
+        <p id="favoritoLeituraTexto" class="reading-text"></p>
+        <button id="removerFavoritoBtn" class="btn subtle cic-showall">Remover dos favoritos</button>
+      </article>
+    </section>
+  </section>
+
+  <!-- ===== LEMBRETES DE ORAÇÃO ===== -->
+  <section id="view-lembretes" class="view hidden">
+    <button class="back-link" data-back-to="home">‹ Início</button>
+
+    <article class="card">
+      <p class="fieis-note">Ative lembretes para os momentos de oração do dia. Como o app não tem servidor (por privacidade, sem coleta de dados), o lembrete funciona enquanto o app estiver aberto ou instalado rodando em segundo plano — não é um despertador garantido do sistema, mas ajuda a criar o hábito.</p>
+      <button id="lembretesPedirPermissaoBtn" class="btn primary hidden">Permitir notificações</button>
+      <p id="lembretesStatus" class="status hidden"></p>
+    </article>
+
+    <div id="lembretesList"></div>
   </section>
 
   <!-- ===== LITURGIA DO DIA ===== -->
@@ -329,6 +390,7 @@
         <h2 id="cicParagraphNumber" class="bible-title"></h2>
         <p id="cicParagraphBreadcrumb" class="cic-breadcrumb"></p>
         <button id="narrateCicBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
+        <button id="favoritarCicBtn" class="btn subtle">☆ Favoritar</button>
       </div>
       <article class="card">
         <p id="cicParagraphText" class="reading-text"></p>
@@ -379,6 +441,11 @@
     <section id="rosario-step-reader" class="bible-step hidden">
       <button class="back-link" data-back-to="rosario-misterio">‹ Voltar</button>
       <h2 id="rosarioReaderTitle" class="bible-title"></h2>
+      <button id="rosarioGuiadoBtn" class="btn subtle narration-btn">🎧 Rezar guiado por áudio</button>
+      <div id="rosarioGuiadoNav" class="rosario-guiado-nav hidden">
+        <button id="rosarioGuiadoAnterior" class="btn subtle">‹ Anterior</button>
+        <button id="rosarioGuiadoProximo" class="btn subtle">Próximo ›</button>
+      </div>
       <article id="rosarioBody" class="card eucharist-body"></article>
     </section>
   </section>
@@ -455,6 +522,7 @@
       <article class="card">
         <h2 id="oracaoDiversaTitulo" class="bible-title"></h2>
         <button id="narrateOracaoDiversaBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
+        <button id="favoritarOracaoDiversaBtn" class="btn subtle">☆ Favoritar</button>
         <p id="oracaoDiversaTexto" class="reading-text"></p>
         <p id="oracaoDiversaNota" class="eu-nota hidden"></p>
       </article>
@@ -502,6 +570,7 @@
       <article class="card">
         <h2 id="saoMiguelTitulo" class="bible-title"></h2>
         <button id="narrateSaoMiguelBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
+        <button id="favoritarSaoMiguelBtn" class="btn subtle">☆ Favoritar</button>
         <p id="saoMiguelTexto" class="reading-text"></p>
         <p id="saoMiguelNota" class="eu-nota hidden"></p>
       </article>
@@ -531,6 +600,7 @@
       <article class="card">
         <h2 id="gilsonOracaoTitulo" class="bible-title"></h2>
         <button id="narrateGilsonOracaoBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
+        <button id="favoritarGilsonOracaoBtn" class="btn subtle">☆ Favoritar</button>
         <p id="gilsonOracaoTexto" class="reading-text"></p>
         <p id="gilsonOracaoNota" class="eu-nota hidden"></p>
       </article>
@@ -592,6 +662,7 @@
     <article id="promessaResultado" class="card section hidden">
       <p class="reference" id="promessaRef"></p>
       <button id="narratePromessaBtn" class="btn subtle narration-btn" data-narration-label="🔊 Ouvir">🔊 Ouvir</button>
+      <button id="favoritarPromessaBtn" class="btn subtle">☆ Favoritar</button>
       <p id="promessaTexto" class="reading-text"></p>
       <h3>Reflexão</h3>
       <p id="promessaReflexao" class="prayer-text"></p>
@@ -643,6 +714,8 @@
 <script src="saomiguel.js"></script>
 <script src="liturgiadashoras.js"></script>
 <script src="promessas.js"></script>
+<script src="favoritos.js"></script>
+<script src="lembretes.js"></script>
 <script src="pdf.js"></script>
 <script src="app.js"></script>
 </body>

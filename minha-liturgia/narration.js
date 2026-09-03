@@ -7,6 +7,13 @@
   let currentUtterance = null; // precisa ficar viva fora da função, senão o Chrome recolhe (GC) e a fala não sai
   let ptVoice = null;
 
+  // Fila sequencial (ex.: oração guiada passo a passo, um item de cada vez)
+  let queueItems = null;
+  let queueIndex = 0;
+  let queueBtn = null;
+  let queueOnItemChange = null;
+  let queueOnEnd = null;
+
   function pickVoice() {
     const voices = speechSynthesis.getVoices();
     return (
@@ -69,6 +76,11 @@
     if (currentBtn) setLabel(currentBtn, 'idle');
     currentBtn = null;
     currentUtterance = null;
+    if (queueBtn) setLabel(queueBtn, 'idle');
+    queueItems = null;
+    queueBtn = null;
+    queueOnItemChange = null;
+    queueOnEnd = null;
   }
 
   function speakNow(btn, text) {
@@ -120,5 +132,73 @@
     }
   }
 
-  window.MinhaLiturgiaNarration = { supported, toggle, stop, textFrom, textFromBlocos, toSpeechCase };
+  function speakQueueItem() {
+    if (!queueItems || queueIndex >= queueItems.length) {
+      const btn = queueBtn;
+      const onEnd = queueOnEnd;
+      if (btn) setLabel(btn, 'idle');
+      queueItems = null;
+      queueBtn = null;
+      queueOnItemChange = null;
+      queueOnEnd = null;
+      if (onEnd) onEnd();
+      return;
+    }
+    if (queueOnItemChange) queueOnItemChange(queueIndex, queueItems.length);
+    const text = queueItems[queueIndex];
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pt-BR';
+    if (ptVoice) utterance.voice = ptVoice;
+    utterance.rate = 0.95;
+    utterance.onend = () => { queueIndex += 1; speakQueueItem(); };
+    utterance.onerror = () => { queueIndex += 1; speakQueueItem(); };
+    currentUtterance = utterance;
+    speechSynthesis.speak(utterance);
+  }
+
+  // Toca uma lista de textos em sequência, um utterance por vez — usado na
+  // oração guiada (ex.: terço), onde cada passo precisa avançar sozinho e
+  // permitir voltar/pular sem perder a posição.
+  function playQueue(btn, items, { onItemChange, onEnd, startAt } = {}) {
+    if (!supported) {
+      if (window.showToast) window.showToast('Seu navegador não suporta narração por voz.');
+      return;
+    }
+    if (queueBtn === btn && speechSynthesis.speaking && !speechSynthesis.paused) {
+      speechSynthesis.pause();
+      setLabel(btn, 'paused');
+      return;
+    }
+    if (queueBtn === btn && speechSynthesis.paused) {
+      speechSynthesis.resume();
+      setLabel(btn, 'playing');
+      return;
+    }
+    stop();
+    if (!Array.isArray(items) || !items.length) return;
+    queueItems = items;
+    queueIndex = typeof startAt === 'number' ? startAt : 0;
+    queueBtn = btn;
+    queueOnItemChange = onItemChange || null;
+    queueOnEnd = onEnd || null;
+    setLabel(btn, 'playing');
+    speechSynthesis.cancel();
+    setTimeout(speakQueueItem, 80);
+  }
+
+  function queueGoTo(index) {
+    if (!queueItems) return;
+    speechSynthesis.cancel();
+    queueIndex = Math.max(0, Math.min(index, queueItems.length - 1));
+    setTimeout(speakQueueItem, 80);
+  }
+
+  function queueNext() { if (queueItems) queueGoTo(queueIndex + 1); }
+  function queuePrev() { if (queueItems) queueGoTo(queueIndex - 1); }
+  function queueActive(btn) { return queueBtn === btn; }
+
+  window.MinhaLiturgiaNarration = {
+    supported, toggle, stop, textFrom, textFromBlocos, toSpeechCase,
+    playQueue, queueNext, queuePrev, queueGoTo, queueActive,
+  };
 })();

@@ -110,6 +110,17 @@ function renderEntryCard(container, titulo, dataFormatada, entry) {
     container.appendChild(narrateBtn);
   }
 
+  if (entry && window.MinhaLiturgiaFavoritos) {
+    const favBtn = document.createElement('button');
+    favBtn.className = 'btn subtle';
+    window.MinhaLiturgiaFavoritos.attachFavoritoBtn(favBtn, () => ({
+      titulo,
+      subtitulo: entry.tipo,
+      texto: `${entry.bio} Reflexão. ${entry.reflexao}`,
+    }));
+    container.appendChild(favBtn);
+  }
+
   if (!entry) {
     const p = document.createElement('p');
     p.className = 'status';

@@ -570,11 +570,13 @@ let oracoesDiversasInitialized = false;
 let saoMiguelInitialized = false;
 let promessasInitialized = false;
 let liturgiaDasHorasInitialized = false;
+let favoritosInitialized = false;
+let lembretesInitialized = false;
 
 function showView(name) {
   if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
 
-  ['home', 'liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas'].forEach((v) => {
+  ['home', 'liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas', 'favoritos', 'lembretes'].forEach((v) => {
     const section = el(`view-${v}`);
     if (section) section.classList.toggle('hidden', v !== name);
   });
@@ -649,6 +651,18 @@ function showView(name) {
       promessasInitialized = true;
       window.MinhaLiturgiaPromessas.initPromessas();
     }
+  } else if (name === 'favoritos') {
+    subtitle.textContent = 'Orações e leituras que você guardou';
+    if (window.MinhaLiturgiaFavoritos) {
+      if (!favoritosInitialized) { favoritosInitialized = true; window.MinhaLiturgiaFavoritos.initFavoritos(); }
+      else window.MinhaLiturgiaFavoritos.renderFavoritosList();
+    }
+  } else if (name === 'lembretes') {
+    subtitle.textContent = 'Ative avisos para os momentos de oração';
+    if (!lembretesInitialized && window.MinhaLiturgiaLembretes) {
+      lembretesInitialized = true;
+      window.MinhaLiturgiaLembretes.initLembretes();
+    }
   } else {
     subtitle.textContent = 'Celebração do dia e Bíblia Sagrada';
   }
@@ -672,6 +686,8 @@ function initRouter() {
   el('goSaoMiguel').addEventListener('click', () => showView('saomiguel'));
   el('goLiturgiaDasHoras').addEventListener('click', () => showView('liturgiadashoras'));
   el('goPromessas').addEventListener('click', () => showView('promessas'));
+  el('goFavoritos').addEventListener('click', () => showView('favoritos'));
+  el('goLembretes').addEventListener('click', () => showView('lembretes'));
   el('dayVerseCard').addEventListener('click', () => showView('liturgia'));
   el('homeBtn').addEventListener('click', () => showView('home'));
   document.querySelectorAll('[data-back-to="home"]').forEach((b) => {
@@ -679,7 +695,7 @@ function initRouter() {
   });
 
   const initial = location.hash.replace('#/', '').replace('#', '');
-  const validViews = ['liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas'];
+  const validViews = ['liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas', 'favoritos', 'lembretes'];
   showView(validViews.includes(initial) ? initial : 'home');
 }
 
@@ -844,6 +860,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initInstallPrompt();
   initServiceWorker();
   if (window.MinhaLiturgiaBible) window.MinhaLiturgiaBible.initBible();
+  if (window.MinhaLiturgiaLembretes) window.MinhaLiturgiaLembretes.iniciarVerificadorLembretes();
   initRouter();
   initDayVerse();
 });

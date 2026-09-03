@@ -84,6 +84,8 @@ function referenciaTexto(p) {
   return `${p.livro} ${p.capitulo},${p.versiculo}${p.versiculoFim ? '-' + p.versiculoFim : ''}`;
 }
 
+let atualizarFavoritoPromessa = null;
+
 async function mostrarPromessa() {
   if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   const p = sortearPromessa();
@@ -102,6 +104,7 @@ async function mostrarPromessa() {
     prel('promessaRef').textContent = referenciaTexto(p);
     prel('promessaTexto').textContent = texto;
     prel('promessaReflexao').textContent = p.reflexao;
+    if (atualizarFavoritoPromessa) atualizarFavoritoPromessa();
 
     statusEl.classList.add('hidden');
     resultado.classList.remove('hidden');
@@ -125,6 +128,15 @@ function initPromessas() {
         );
       }
     });
+  }
+  if (window.MinhaLiturgiaFavoritos) {
+    atualizarFavoritoPromessa = window.MinhaLiturgiaFavoritos.attachFavoritoBtn(
+      prel('favoritarPromessaBtn'),
+      () => ({
+        titulo: prel('promessaRef').textContent,
+        texto: `${prel('promessaTexto').textContent} Reflexão. ${prel('promessaReflexao').textContent}`,
+      })
+    );
   }
 }
 

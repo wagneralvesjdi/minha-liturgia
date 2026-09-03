@@ -274,18 +274,24 @@ const rel = (id) => document.getElementById(id);
 let rosarioMisterioAtual = null;
 
 function rosarioStepShow(step) {
+  if (step !== 'reader' && window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   ['modo', 'misterio', 'reader'].forEach((s) => {
     const el2 = rel(`rosario-step-${s}`);
     if (el2) el2.classList.toggle('hidden', s !== step);
   });
 }
 
+let rosarioBlocosAtual = [];
+
 function renderReader(titulo, blocos) {
+  if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
+  rosarioBlocosAtual = blocos;
   rel('rosarioReaderTitle').textContent = titulo;
   const body = rel('rosarioBody');
   body.innerHTML = '';
-  blocos.forEach((bloco) => {
+  blocos.forEach((bloco, idx) => {
     const p = document.createElement('p');
+    p.dataset.blocoIndex = idx;
     if (bloco.tipo === 'misterio') {
       p.className = 'eu-line eu-misterio';
       p.innerHTML = `<strong>${bloco.texto}</strong>${bloco.sub ? `<br><span class="eu-nota">${bloco.sub}</span>` : ''}`;
@@ -298,8 +304,70 @@ function renderReader(titulo, blocos) {
     }
     body.appendChild(p);
   });
+  setGuiadoLabel('idle', 0, blocos.length);
   rosarioStepShow('reader');
   body.scrollIntoView({ block: 'start' });
+}
+
+/* ---------- Modo guiado por áudio (avança sozinho, passo a passo) ---------- */
+
+function blocoTextoNarracao(bloco) {
+  const texto = bloco.sub ? `${bloco.texto}. ${bloco.sub}` : bloco.texto;
+  return bloco.label ? `${bloco.label}. ${texto}` : texto;
+}
+
+function setGuiadoLabel(state, idx, total) {
+  const btn = rel('rosarioGuiadoBtn');
+  if (!btn) return;
+  if (state === 'playing') btn.textContent = `⏸ Pausar (passo ${idx + 1} de ${total})`;
+  else if (state === 'paused') btn.textContent = `▶ Continuar (passo ${idx + 1} de ${total})`;
+  else btn.textContent = '🎧 Rezar guiado por áudio';
+  rel('rosarioGuiadoNav').classList.toggle('hidden', state === 'idle');
+}
+
+function destacarBloco(idx) {
+  const body = rel('rosarioBody');
+  body.querySelectorAll('.bloco-atual').forEach((el) => el.classList.remove('bloco-atual'));
+  const alvo = body.querySelector(`[data-bloco-index="${idx}"]`);
+  if (alvo) {
+    alvo.classList.add('bloco-atual');
+    alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+let ultimoIndiceGuiado = 0;
+
+function iniciarModoGuiado() {
+  if (!window.MinhaLiturgiaNarration || !rosarioBlocosAtual.length) return;
+  const btn = rel('rosarioGuiadoBtn');
+  if (window.MinhaLiturgiaNarration.queueActive(btn)) {
+    window.MinhaLiturgiaNarration.playQueue(btn, null); // toggle pausa/continuar
+    // playQueue mexe no texto do botão internamente; sobrescreve com o nosso formato.
+    const pausado = typeof speechSynthesis !== 'undefined' && speechSynthesis.paused;
+    setGuiadoLabel(pausado ? 'paused' : 'playing', ultimoIndiceGuiado, rosarioBlocosAtual.length);
+    return;
+  }
+  const textos = rosarioBlocosAtual.map(blocoTextoNarracao);
+  window.MinhaLiturgiaNarration.playQueue(btn, textos, {
+    onItemChange: (idx, total) => {
+      ultimoIndiceGuiado = idx;
+      setGuiadoLabel('playing', idx, total);
+      destacarBloco(idx);
+    },
+    onEnd: () => {
+      ultimoIndiceGuiado = 0;
+      setGuiadoLabel('idle', 0, rosarioBlocosAtual.length);
+      const body = rel('rosarioBody');
+      body.querySelectorAll('.bloco-atual').forEach((el) => el.classList.remove('bloco-atual'));
+    },
+  });
+}
+
+function guiadoPular(delta) {
+  if (!window.MinhaLiturgiaNarration) return;
+  const btn = rel('rosarioGuiadoBtn');
+  if (!window.MinhaLiturgiaNarration.queueActive(btn)) return;
+  window.MinhaLiturgiaNarration.queueGoTo(ultimoIndiceGuiado + delta);
 }
 
 function openMisterioList() {
@@ -349,6 +417,10 @@ function initRosario() {
       else rosarioStepShow('modo');
     });
   });
+
+  rel('rosarioGuiadoBtn').addEventListener('click', iniciarModoGuiado);
+  rel('rosarioGuiadoAnterior').addEventListener('click', () => guiadoPular(-1));
+  rel('rosarioGuiadoProximo').addEventListener('click', () => guiadoPular(1));
 }
 
 window.MinhaLiturgiaRosario = { initRosario };

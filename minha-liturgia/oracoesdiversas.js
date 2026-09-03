@@ -163,6 +163,8 @@ function renderOracoesDiversasList() {
   });
 }
 
+let atualizarFavoritoOracaoDiversa = null;
+
 function openOracaoDiversa(idx) {
   const o = ORACOES_DIVERSAS[idx];
   if (!o) return;
@@ -173,6 +175,7 @@ function openOracaoDiversa(idx) {
   const notaEl = oel('oracaoDiversaNota');
   notaEl.textContent = o.fonteNota || '';
   notaEl.classList.toggle('hidden', !o.fonteNota);
+  if (atualizarFavoritoOracaoDiversa) atualizarFavoritoOracaoDiversa();
 
   oel('oracoesdiversas-step-lista').classList.add('hidden');
   oel('oracoesdiversas-step-leitura').classList.remove('hidden');
@@ -187,6 +190,12 @@ function initOracoesDiversas() {
       oel('oracoesdiversas-step-lista').classList.remove('hidden');
     });
   });
+  if (window.MinhaLiturgiaFavoritos) {
+    atualizarFavoritoOracaoDiversa = window.MinhaLiturgiaFavoritos.attachFavoritoBtn(
+      oel('favoritarOracaoDiversaBtn'),
+      () => ({ titulo: oel('oracaoDiversaTitulo').textContent, texto: oel('oracaoDiversaTexto').textContent })
+    );
+  }
   oel('narrateOracaoDiversaBtn').addEventListener('click', () => {
     if (window.MinhaLiturgiaNarration) {
       window.MinhaLiturgiaNarration.toggle(oel('narrateOracaoDiversaBtn'), () =>

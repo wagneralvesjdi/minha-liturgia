@@ -264,6 +264,9 @@ async function abrirPassagemDedicada(item, voltarStepId) {
 
 /* ---------- Renderização genérica de listas de orações ---------- */
 
+let atualizarFavoritoSaoMiguel = null;
+let atualizarFavoritoGilsonOracao = null;
+
 function renderOracoesList(listaId, oracoes, tituloId, textoId, notaId, stepListaId, stepLeituraId) {
   const list = smel(listaId);
   list.innerHTML = '';
@@ -280,6 +283,8 @@ function renderOracoesList(listaId, oracoes, tituloId, textoId, notaId, stepList
       notaEl.classList.toggle('hidden', !oracao.fonteNota);
       smel(stepListaId).classList.add('hidden');
       smel(stepLeituraId).classList.remove('hidden');
+      if (tituloId === 'saoMiguelTitulo' && atualizarFavoritoSaoMiguel) atualizarFavoritoSaoMiguel();
+      if (tituloId === 'gilsonOracaoTitulo' && atualizarFavoritoGilsonOracao) atualizarFavoritoGilsonOracao();
     });
     list.appendChild(btn);
   });
@@ -500,6 +505,17 @@ function initSaoMiguel() {
       });
     }
   });
+
+  if (window.MinhaLiturgiaFavoritos) {
+    atualizarFavoritoSaoMiguel = window.MinhaLiturgiaFavoritos.attachFavoritoBtn(
+      smel('favoritarSaoMiguelBtn'),
+      () => ({ titulo: smel('saoMiguelTitulo').textContent, texto: smel('saoMiguelTexto').textContent })
+    );
+    atualizarFavoritoGilsonOracao = window.MinhaLiturgiaFavoritos.attachFavoritoBtn(
+      smel('favoritarGilsonOracaoBtn'),
+      () => ({ titulo: smel('gilsonOracaoTitulo').textContent, texto: smel('gilsonOracaoTexto').textContent })
+    );
+  }
 }
 
 window.MinhaLiturgiaSaoMiguel = { initSaoMiguel };

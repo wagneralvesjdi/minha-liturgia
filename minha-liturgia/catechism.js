@@ -246,6 +246,8 @@ function setCicNote(msg, isError) {
   el.classList.toggle('error', !!isError);
 }
 
+let atualizarFavoritoCic = null;
+
 function openParagraph(numero) {
   if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
   cicStepShow('paragrafo');
@@ -259,6 +261,7 @@ function openParagraph(numero) {
   }
   cel('cicParagraphBreadcrumb').textContent = p.bc.join(' \u203a ');
   cel('cicParagraphText').textContent = p.texto;
+  if (atualizarFavoritoCic) atualizarFavoritoCic();
 }
 
 /* ---------- Navegação interna ---------- */
@@ -284,6 +287,17 @@ function initCatechism() {
       );
     }
   });
+
+  if (window.MinhaLiturgiaFavoritos) {
+    atualizarFavoritoCic = window.MinhaLiturgiaFavoritos.attachFavoritoBtn(
+      cel('favoritarCicBtn'),
+      () => ({
+        titulo: `Catecismo ${cel('cicParagraphNumber').textContent}`,
+        subtitulo: cel('cicParagraphBreadcrumb').textContent,
+        texto: cel('cicParagraphText').textContent,
+      })
+    );
+  }
 }
 
 window.MinhaLiturgiaCatechism = { initCatechism, searchCatechism, openGroup };
