@@ -1,18 +1,26 @@
-/* Narração por voz (Web Speech API) — sem download, sem custo, funciona offline
-   com a voz de TTS já instalada no aparelho. */
+/* Narração por voz — dois motores:
+   1) Áudio pré-gravado (voz mais natural), quando existir o arquivo.
+   2) Web Speech API (voz do aparelho) como reserva — sem download, sem
+      custo, funciona offline. Cada trecho pode ir migrando aos poucos
+      do (2) pro (1) só trocando o arquivo de áudio, sem mexer no resto
+      do app. */
 (function () {
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
   let currentBtn = null;
   let currentUtterance = null; // precisa ficar viva fora da função, senão o Chrome recolhe (GC) e a fala não sai
+  let currentAudio = null; // <audio> tocando fora de fila (playAudio avulso)
   let ptVoice = null;
 
-  // Fila sequencial (ex.: oração guiada passo a passo, um item de cada vez)
+  // Fila sequencial (ex.: oração guiada passo a passo, um item de cada vez).
+  // Cada item pode ser uma string (fala por voz do aparelho) ou
+  // { text, audioUrl } (toca o áudio gravado; se falhar, cai pra fala).
   let queueItems = null;
   let queueIndex = 0;
   let queueBtn = null;
   let queueOnItemChange = null;
   let queueOnEnd = null;
+  let queueAudio = null; // <audio> tocando dentro da fila, se o passo atual usa áudio gravado
 
   function pickVoice() {
     const voices = speechSynthesis.getVoices();
@@ -71,8 +79,9 @@
   }
 
   function stop() {
-    if (!supported) return;
-    speechSynthesis.cancel();
+    if (currentAudio) { currentAudio.pause(); currentAudio.onended = null; currentAudio.onerror = null; currentAudio = null; }
+    if (queueAudio) { queueAudio.pause(); queueAudio.onended = null; queueAudio.onerror = null; queueAudio = null; }
+    if (supported) speechSynthesis.cancel();
     if (currentBtn) setLabel(currentBtn, 'idle');
     currentBtn = null;
     currentUtterance = null;
@@ -132,6 +141,63 @@
     }
   }
 
+  // Toca um único áudio gravado (voz mais natural). Se o arquivo não existir
+  // ou falhar ao carregar, cai automaticamente pra voz do aparelho.
+  function playAudio(btn, url, getFallbackText) {
+    if (currentBtn === btn && currentAudio && !currentAudio.paused) {
+      currentAudio.pause();
+      setLabel(btn, 'paused');
+      return;
+    }
+    if (currentBtn === btn && currentAudio && currentAudio.paused) {
+      currentAudio.play();
+      setLabel(btn, 'playing');
+      return;
+    }
+    stop();
+    const audio = new Audio(url);
+    audio.onended = () => { setLabel(btn, 'idle'); currentBtn = null; currentAudio = null; };
+    audio.onerror = () => {
+      currentAudio = null;
+      currentBtn = null;
+      if (supported && getFallbackText) toggle(btn, getFallbackText);
+    };
+    currentAudio = audio;
+    currentBtn = btn;
+    setLabel(btn, 'playing');
+    audio.play().catch(() => {
+      currentAudio = null;
+      currentBtn = null;
+      if (supported && getFallbackText) toggle(btn, getFallbackText);
+    });
+  }
+
+  function normalizeQueueItem(item) {
+    if (typeof item === 'string') return { text: item, audioUrl: null };
+    return { text: (item && item.text) || '', audioUrl: (item && item.audioUrl) || null };
+  }
+
+  function queueAdvance() { queueIndex += 1; speakQueueItem(); }
+
+  function speakQueueSpeech(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pt-BR';
+    if (ptVoice) utterance.voice = ptVoice;
+    utterance.rate = 0.95;
+    utterance.onend = queueAdvance;
+    utterance.onerror = queueAdvance;
+    currentUtterance = utterance;
+    speechSynthesis.speak(utterance);
+  }
+
+  function speakQueueAudio(item) {
+    const audio = new Audio(item.audioUrl);
+    audio.onended = () => { queueAudio = null; queueAdvance(); };
+    audio.onerror = () => { queueAudio = null; speakQueueSpeech(item.text); };
+    queueAudio = audio;
+    audio.play().catch(() => { queueAudio = null; speakQueueSpeech(item.text); });
+  }
+
   function speakQueueItem() {
     if (!queueItems || queueIndex >= queueItems.length) {
       const btn = queueBtn;
@@ -145,34 +211,26 @@
       return;
     }
     if (queueOnItemChange) queueOnItemChange(queueIndex, queueItems.length);
-    const text = queueItems[queueIndex];
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    if (ptVoice) utterance.voice = ptVoice;
-    utterance.rate = 0.95;
-    utterance.onend = () => { queueIndex += 1; speakQueueItem(); };
-    utterance.onerror = () => { queueIndex += 1; speakQueueItem(); };
-    currentUtterance = utterance;
-    speechSynthesis.speak(utterance);
+    const item = normalizeQueueItem(queueItems[queueIndex]);
+    if (item.audioUrl) speakQueueAudio(item);
+    else speakQueueSpeech(item.text);
   }
 
-  // Toca uma lista de textos em sequência, um utterance por vez — usado na
-  // oração guiada (ex.: terço), onde cada passo precisa avançar sozinho e
-  // permitir voltar/pular sem perder a posição.
+  // Toca uma lista de passos em sequência — cada passo pode ser um texto
+  // (voz do aparelho) ou { text, audioUrl } (áudio gravado, com a mesma
+  // fala como reserva). Usado na oração guiada (ex.: terço), onde cada
+  // passo precisa avançar sozinho e permitir voltar/pular sem perder a
+  // posição.
   function playQueue(btn, items, { onItemChange, onEnd, startAt } = {}) {
     if (!supported) {
       if (window.showToast) window.showToast('Seu navegador não suporta narração por voz.');
       return;
     }
-    if (queueBtn === btn && speechSynthesis.speaking && !speechSynthesis.paused) {
-      speechSynthesis.pause();
-      setLabel(btn, 'paused');
-      return;
-    }
-    if (queueBtn === btn && speechSynthesis.paused) {
-      speechSynthesis.resume();
-      setLabel(btn, 'playing');
-      return;
+    if (queueBtn === btn) {
+      if (queueAudio && !queueAudio.paused) { queueAudio.pause(); setLabel(btn, 'paused'); return; }
+      if (queueAudio && queueAudio.paused) { queueAudio.play(); setLabel(btn, 'playing'); return; }
+      if (speechSynthesis.speaking && !speechSynthesis.paused) { speechSynthesis.pause(); setLabel(btn, 'paused'); return; }
+      if (speechSynthesis.paused) { speechSynthesis.resume(); setLabel(btn, 'playing'); return; }
     }
     stop();
     if (!Array.isArray(items) || !items.length) return;
@@ -188,6 +246,7 @@
 
   function queueGoTo(index) {
     if (!queueItems) return;
+    if (queueAudio) { queueAudio.pause(); queueAudio.onended = null; queueAudio.onerror = null; queueAudio = null; }
     speechSynthesis.cancel();
     queueIndex = Math.max(0, Math.min(index, queueItems.length - 1));
     setTimeout(speakQueueItem, 80);
@@ -198,7 +257,7 @@
   function queueActive(btn) { return queueBtn === btn; }
 
   window.MinhaLiturgiaNarration = {
-    supported, toggle, stop, textFrom, textFromBlocos, toSpeechCase,
+    supported, toggle, stop, textFrom, textFromBlocos, toSpeechCase, playAudio,
     playQueue, queueNext, queuePrev, queueGoTo, queueActive,
   };
 })();

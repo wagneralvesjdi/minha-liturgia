@@ -30,6 +30,39 @@ const ORACOES = {
   pedidoChagas: 'Meu Jesus, perdão e misericórdia, pelos méritos de vossas Santas Chagas.',
 };
 
+/* IDs dos áudios pré-gravados (voz mais natural) de cada oração fixa.
+   Se o arquivo audio/oracoes/<id>.mp3 existir, ele toca; senão, a
+   narração cai automaticamente pra voz do aparelho — sem precisar
+   mudar código nenhum quando os áudios forem gerados aos poucos. */
+const AUDIO_IDS = {
+  sinalCruz: 'sinal-da-cruz',
+  credo: 'credo',
+  paiNosso: 'pai-nosso',
+  aveMaria: 'ave-maria',
+  gloria: 'gloria',
+  fatima: 'fatima',
+  salveRainha: 'salve-rainha',
+  oracaoFinalRosario: 'oracao-final-rosario',
+  oferecimento: 'oferecimento',
+  acaoDeGracas: 'acao-de-gracas',
+  ofertaMisericordia: 'oferta-misericordia',
+  pedidoMisericordia: 'pedido-misericordia',
+  santoImortal: 'santo-imortal',
+  confioEmVos: 'confio-em-vos',
+  oracaoSaoMiguel: 'oracao-sao-miguel',
+  ofertaChagas: 'oferta-chagas',
+  pedidoChagas: 'pedido-chagas',
+};
+
+function audioUrlFor(chaveOracao) {
+  const id = AUDIO_IDS[chaveOracao];
+  return id ? `audio/oracoes/${id}.mp3` : null;
+}
+
+function oracaoBloco(label, chaveOracao) {
+  return { tipo: 'oracao', label, texto: ORACOES[chaveOracao], chaveOracao };
+}
+
 const MISTERIOS = {
   gozosos: {
     nome: 'Mistérios Gozosos',
@@ -115,32 +148,32 @@ const MISTERIOS_LIBERTACAO = [
 function blocoMisterio(numero, item) {
   return [
     { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.fruto },
-    { tipo: 'oracao', label: 'Pai Nosso', texto: ORACOES.paiNosso },
-    { tipo: 'oracao', label: 'Ave Maria (10x)', texto: ORACOES.aveMaria },
-    { tipo: 'oracao', label: 'Glória', texto: ORACOES.gloria },
-    { tipo: 'oracao', label: 'Jaculatória de Fátima', texto: ORACOES.fatima },
+    oracaoBloco('Pai Nosso', 'paiNosso'),
+    oracaoBloco('Ave Maria (10x)', 'aveMaria'),
+    oracaoBloco('Glória', 'gloria'),
+    oracaoBloco('Jaculatória de Fátima', 'fatima'),
   ];
 }
 
 function blocosAbertura() {
   return [
-    { tipo: 'oracao', label: 'Sinal da Cruz', texto: ORACOES.sinalCruz },
-    { tipo: 'oracao', label: 'Oferecimento', texto: ORACOES.oferecimento },
-    { tipo: 'oracao', label: 'Credo', texto: ORACOES.credo },
-    { tipo: 'oracao', label: 'Pai Nosso', texto: ORACOES.paiNosso },
+    oracaoBloco('Sinal da Cruz', 'sinalCruz'),
+    oracaoBloco('Oferecimento', 'oferecimento'),
+    oracaoBloco('Credo', 'credo'),
+    oracaoBloco('Pai Nosso', 'paiNosso'),
     { tipo: 'nota', texto: 'Três Ave-Marias, pedindo o aumento da Fé, da Esperança e da Caridade.' },
-    { tipo: 'oracao', label: 'Ave Maria (3x)', texto: ORACOES.aveMaria },
-    { tipo: 'oracao', label: 'Glória', texto: ORACOES.gloria },
+    oracaoBloco('Ave Maria (3x)', 'aveMaria'),
+    oracaoBloco('Glória', 'gloria'),
   ];
 }
 
 function blocosFechamento() {
   return [
-    { tipo: 'oracao', label: 'Salve Rainha', texto: ORACOES.salveRainha },
+    oracaoBloco('Salve Rainha', 'salveRainha'),
     { tipo: 'nota', texto: 'V. Rogai por nós, Santa Mãe de Deus. R. Para que sejamos dignos das promessas de Cristo.' },
-    { tipo: 'oracao', label: 'Oremos', texto: ORACOES.oracaoFinalRosario },
-    { tipo: 'oracao', label: 'Ação de Graças', texto: ORACOES.acaoDeGracas },
-    { tipo: 'oracao', label: 'Sinal da Cruz', texto: ORACOES.sinalCruz },
+    oracaoBloco('Oremos', 'oracaoFinalRosario'),
+    oracaoBloco('Ação de Graças', 'acaoDeGracas'),
+    oracaoBloco('Sinal da Cruz', 'sinalCruz'),
   ];
 }
 
@@ -173,19 +206,19 @@ function buildRosarioCompleto() {
 function buildTercoMisericordia() {
   let blocos = [
     { tipo: 'nota', texto: 'Terço da Misericórdia — rezado nas contas do terço comum, de preferência às 15h (Hora da Misericórdia).' },
-    { tipo: 'oracao', label: 'Sinal da Cruz', texto: ORACOES.sinalCruz },
-    { tipo: 'oracao', label: 'Pai Nosso', texto: ORACOES.paiNosso },
-    { tipo: 'oracao', label: 'Ave Maria', texto: ORACOES.aveMaria },
-    { tipo: 'oracao', label: 'Credo', texto: ORACOES.credo },
+    oracaoBloco('Sinal da Cruz', 'sinalCruz'),
+    oracaoBloco('Pai Nosso', 'paiNosso'),
+    oracaoBloco('Ave Maria', 'aveMaria'),
+    oracaoBloco('Credo', 'credo'),
   ];
   for (let d = 1; d <= 5; d += 1) {
     blocos.push({ tipo: 'misterio', texto: `${d}ª Dezena`, sub: '' });
-    blocos.push({ tipo: 'oracao', label: 'Na conta grande', texto: ORACOES.ofertaMisericordia });
-    blocos.push({ tipo: 'oracao', label: 'Nas 10 contas pequenas (10x)', texto: ORACOES.pedidoMisericordia });
+    blocos.push(oracaoBloco('Na conta grande', 'ofertaMisericordia'));
+    blocos.push(oracaoBloco('Nas 10 contas pequenas (10x)', 'pedidoMisericordia'));
   }
-  blocos.push({ tipo: 'oracao', label: 'Ao final (3x)', texto: ORACOES.santoImortal });
-  blocos.push({ tipo: 'oracao', label: 'Oração final (3x)', texto: ORACOES.confioEmVos });
-  blocos.push({ tipo: 'oracao', label: 'Sinal da Cruz', texto: ORACOES.sinalCruz });
+  blocos.push(oracaoBloco('Ao final (3x)', 'santoImortal'));
+  blocos.push(oracaoBloco('Oração final (3x)', 'confioEmVos'));
+  blocos.push(oracaoBloco('Sinal da Cruz', 'sinalCruz'));
   return blocos;
 }
 
@@ -196,8 +229,8 @@ function blocoCoro(numero, coro) {
       texto: `${numero}º Coro — Santos ${coro.nome}`,
       sub: `Por intercessão de São Miguel e do celeste coro dos Santos ${coro.nome}, digne-se o Senhor conceder-nos a graça de que ${coro.graca}. Amém.`,
     },
-    { tipo: 'oracao', label: 'Pai Nosso', texto: ORACOES.paiNosso },
-    { tipo: 'oracao', label: 'Ave Maria (3x)', texto: ORACOES.aveMaria },
+    oracaoBloco('Pai Nosso', 'paiNosso'),
+    oracaoBloco('Ave Maria (3x)', 'aveMaria'),
   ];
 }
 
@@ -207,25 +240,25 @@ function buildTercoSaoMiguel() {
       tipo: 'nota',
       texto: 'Terço de São Miguel Arcanjo — devoção revelada à Beata Antônia d\'Astonac e aprovada pela Igreja. Nove saudações aos nove coros angélicos, cada uma com um Pai-Nosso e três Ave-Marias.',
     },
-    { tipo: 'oracao', label: 'Sinal da Cruz', texto: ORACOES.sinalCruz },
+    oracaoBloco('Sinal da Cruz', 'sinalCruz'),
   ];
   COROS_ANJOS.forEach((coro, i) => { blocos = blocos.concat(blocoCoro(i + 1, coro)); });
   blocos.push({
     tipo: 'nota',
     texto: 'Em honra aos quatro Arcanjos — São Miguel, São Gabriel, São Rafael e o nosso Anjo da Guarda — rezai quatro Pai-Nossos.',
   });
-  blocos.push({ tipo: 'oracao', label: 'Pai Nosso (4x)', texto: ORACOES.paiNosso });
-  blocos.push({ tipo: 'oracao', label: 'Oração a São Miguel Arcanjo', texto: ORACOES.oracaoSaoMiguel });
-  blocos.push({ tipo: 'oracao', label: 'Sinal da Cruz', texto: ORACOES.sinalCruz });
+  blocos.push(oracaoBloco('Pai Nosso (4x)', 'paiNosso'));
+  blocos.push(oracaoBloco('Oração a São Miguel Arcanjo', 'oracaoSaoMiguel'));
+  blocos.push(oracaoBloco('Sinal da Cruz', 'sinalCruz'));
   return blocos;
 }
 
 function blocoMisterioLibertacao(numero, item) {
   return [
     { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.texto },
-    { tipo: 'oracao', label: 'Pai Nosso', texto: ORACOES.paiNosso },
-    { tipo: 'oracao', label: 'Ave Maria (10x)', texto: ORACOES.aveMaria },
-    { tipo: 'oracao', label: 'Glória', texto: ORACOES.gloria },
+    oracaoBloco('Pai Nosso', 'paiNosso'),
+    oracaoBloco('Ave Maria (10x)', 'aveMaria'),
+    oracaoBloco('Glória', 'gloria'),
   ];
 }
 
@@ -245,8 +278,8 @@ function buildTercoLibertacao() {
 function blocoDezenaChagas(numero) {
   return [
     { tipo: 'misterio', texto: `${numero}ª Dezena`, sub: '' },
-    { tipo: 'oracao', label: 'Na conta grande', texto: ORACOES.ofertaChagas },
-    { tipo: 'oracao', label: 'Nas 10 contas pequenas (10x)', texto: ORACOES.pedidoChagas },
+    oracaoBloco('Na conta grande', 'ofertaChagas'),
+    oracaoBloco('Nas 10 contas pequenas (10x)', 'pedidoChagas'),
   ];
 }
 
@@ -256,7 +289,7 @@ function buildTercoChagas() {
       tipo: 'nota',
       texto: 'Terço das Santas Chagas — devoção revelada à Irmã Maria Marta Chambon (1841-1907), Clarissa, e aprovada pela Igreja. Cinco dezenas em honra das Cinco Chagas de Cristo.',
     },
-    { tipo: 'oracao', label: 'Sinal da Cruz', texto: ORACOES.sinalCruz },
+    oracaoBloco('Sinal da Cruz', 'sinalCruz'),
   ];
   for (let d = 1; d <= 5; d += 1) blocos = blocos.concat(blocoDezenaChagas(d));
   blocos.push({
@@ -264,7 +297,7 @@ function buildTercoChagas() {
     label: 'Oração final',
     texto: 'Eterno Pai, eu Vos ofereço as Chagas de Nosso Senhor Jesus Cristo para curar as chagas de nossas almas, para reparar os pecados do mundo e para a salvação de todas as almas.',
   });
-  blocos.push({ tipo: 'oracao', label: 'Sinal da Cruz', texto: ORACOES.sinalCruz });
+  blocos.push(oracaoBloco('Sinal da Cruz', 'sinalCruz'));
   return blocos;
 }
 
@@ -313,7 +346,9 @@ function renderReader(titulo, blocos) {
 
 function blocoTextoNarracao(bloco) {
   const texto = bloco.sub ? `${bloco.texto}. ${bloco.sub}` : bloco.texto;
-  return bloco.label ? `${bloco.label}. ${texto}` : texto;
+  const textoFinal = bloco.label ? `${bloco.label}. ${texto}` : texto;
+  const audioUrl = bloco.chaveOracao ? audioUrlFor(bloco.chaveOracao) : null;
+  return audioUrl ? { text: textoFinal, audioUrl } : textoFinal;
 }
 
 function setGuiadoLabel(state, idx, total) {
