@@ -59,8 +59,8 @@ function audioUrlFor(chaveOracao) {
   return id ? `audio/oracoes/${id}.mp3` : null;
 }
 
-function oracaoBloco(label, chaveOracao) {
-  return { tipo: 'oracao', label, texto: ORACOES[chaveOracao], chaveOracao };
+function oracaoBloco(label, chaveOracao, vezes) {
+  return { tipo: 'oracao', label, texto: ORACOES[chaveOracao], chaveOracao, vezes: vezes || 1 };
 }
 
 const MISTERIOS = {
@@ -149,7 +149,7 @@ function blocoMisterio(numero, item) {
   return [
     { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.fruto },
     oracaoBloco('Pai Nosso', 'paiNosso'),
-    oracaoBloco('Ave Maria (10x)', 'aveMaria'),
+    oracaoBloco('Ave Maria (10x)', 'aveMaria', 10),
     oracaoBloco('Glória', 'gloria'),
     oracaoBloco('Jaculatória de Fátima', 'fatima'),
   ];
@@ -162,7 +162,7 @@ function blocosAbertura() {
     oracaoBloco('Credo', 'credo'),
     oracaoBloco('Pai Nosso', 'paiNosso'),
     { tipo: 'nota', texto: 'Três Ave-Marias, pedindo o aumento da Fé, da Esperança e da Caridade.' },
-    oracaoBloco('Ave Maria (3x)', 'aveMaria'),
+    oracaoBloco('Ave Maria (3x)', 'aveMaria', 3),
     oracaoBloco('Glória', 'gloria'),
   ];
 }
@@ -214,10 +214,10 @@ function buildTercoMisericordia() {
   for (let d = 1; d <= 5; d += 1) {
     blocos.push({ tipo: 'misterio', texto: `${d}ª Dezena`, sub: '' });
     blocos.push(oracaoBloco('Na conta grande', 'ofertaMisericordia'));
-    blocos.push(oracaoBloco('Nas 10 contas pequenas (10x)', 'pedidoMisericordia'));
+    blocos.push(oracaoBloco('Nas 10 contas pequenas (10x)', 'pedidoMisericordia', 10));
   }
-  blocos.push(oracaoBloco('Ao final (3x)', 'santoImortal'));
-  blocos.push(oracaoBloco('Oração final (3x)', 'confioEmVos'));
+  blocos.push(oracaoBloco('Ao final (3x)', 'santoImortal', 3));
+  blocos.push(oracaoBloco('Oração final (3x)', 'confioEmVos', 3));
   blocos.push(oracaoBloco('Sinal da Cruz', 'sinalCruz'));
   return blocos;
 }
@@ -230,7 +230,7 @@ function blocoCoro(numero, coro) {
       sub: `Por intercessão de São Miguel e do celeste coro dos Santos ${coro.nome}, digne-se o Senhor conceder-nos a graça de que ${coro.graca}. Amém.`,
     },
     oracaoBloco('Pai Nosso', 'paiNosso'),
-    oracaoBloco('Ave Maria (3x)', 'aveMaria'),
+    oracaoBloco('Ave Maria (3x)', 'aveMaria', 3),
   ];
 }
 
@@ -247,7 +247,7 @@ function buildTercoSaoMiguel() {
     tipo: 'nota',
     texto: 'Em honra aos quatro Arcanjos — São Miguel, São Gabriel, São Rafael e o nosso Anjo da Guarda — rezai quatro Pai-Nossos.',
   });
-  blocos.push(oracaoBloco('Pai Nosso (4x)', 'paiNosso'));
+  blocos.push(oracaoBloco('Pai Nosso (4x)', 'paiNosso', 4));
   blocos.push(oracaoBloco('Oração a São Miguel Arcanjo', 'oracaoSaoMiguel'));
   blocos.push(oracaoBloco('Sinal da Cruz', 'sinalCruz'));
   return blocos;
@@ -257,7 +257,7 @@ function blocoMisterioLibertacao(numero, item) {
   return [
     { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.texto },
     oracaoBloco('Pai Nosso', 'paiNosso'),
-    oracaoBloco('Ave Maria (10x)', 'aveMaria'),
+    oracaoBloco('Ave Maria (10x)', 'aveMaria', 10),
     oracaoBloco('Glória', 'gloria'),
   ];
 }
@@ -279,7 +279,7 @@ function blocoDezenaChagas(numero) {
   return [
     { tipo: 'misterio', texto: `${numero}ª Dezena`, sub: '' },
     oracaoBloco('Na conta grande', 'ofertaChagas'),
-    oracaoBloco('Nas 10 contas pequenas (10x)', 'pedidoChagas'),
+    oracaoBloco('Nas 10 contas pequenas (10x)', 'pedidoChagas', 10),
   ];
 }
 
@@ -348,14 +348,15 @@ function blocoTextoNarracao(bloco) {
   const texto = bloco.sub ? `${bloco.texto}. ${bloco.sub}` : bloco.texto;
   const textoFinal = bloco.label ? `${bloco.label}. ${texto}` : texto;
   const audioUrl = bloco.chaveOracao ? audioUrlFor(bloco.chaveOracao) : null;
-  return audioUrl ? { text: textoFinal, audioUrl } : textoFinal;
+  return { text: textoFinal, audioUrl, repeat: bloco.vezes || 1 };
 }
 
-function setGuiadoLabel(state, idx, total) {
+function setGuiadoLabel(state, idx, total, repeatInfo) {
   const btn = rel('rosarioGuiadoBtn');
   if (!btn) return;
-  if (state === 'playing') btn.textContent = `⏸ Pausar (passo ${idx + 1} de ${total})`;
-  else if (state === 'paused') btn.textContent = `▶ Continuar (passo ${idx + 1} de ${total})`;
+  const repTxt = repeatInfo && repeatInfo.total > 1 ? ` — ${repeatInfo.atual}/${repeatInfo.total}` : '';
+  if (state === 'playing') btn.textContent = `⏸ Pausar (passo ${idx + 1} de ${total}${repTxt})`;
+  else if (state === 'paused') btn.textContent = `▶ Continuar (passo ${idx + 1} de ${total}${repTxt})`;
   else btn.textContent = '🎧 Rezar guiado por áudio';
   rel('rosarioGuiadoNav').classList.toggle('hidden', state === 'idle');
 }
@@ -371,6 +372,7 @@ function destacarBloco(idx) {
 }
 
 let ultimoIndiceGuiado = 0;
+let ultimoRepeatInfo = null;
 
 function iniciarModoGuiado() {
   if (!window.MinhaLiturgiaNarration || !rosarioBlocosAtual.length) return;
@@ -379,18 +381,20 @@ function iniciarModoGuiado() {
     window.MinhaLiturgiaNarration.playQueue(btn, null); // toggle pausa/continuar
     // playQueue mexe no texto do botão internamente; sobrescreve com o nosso formato.
     const pausado = typeof speechSynthesis !== 'undefined' && speechSynthesis.paused;
-    setGuiadoLabel(pausado ? 'paused' : 'playing', ultimoIndiceGuiado, rosarioBlocosAtual.length);
+    setGuiadoLabel(pausado ? 'paused' : 'playing', ultimoIndiceGuiado, rosarioBlocosAtual.length, ultimoRepeatInfo);
     return;
   }
   const textos = rosarioBlocosAtual.map(blocoTextoNarracao);
   window.MinhaLiturgiaNarration.playQueue(btn, textos, {
-    onItemChange: (idx, total) => {
+    onItemChange: (idx, total, repeatAtual, repeatTotal) => {
       ultimoIndiceGuiado = idx;
-      setGuiadoLabel('playing', idx, total);
+      ultimoRepeatInfo = { atual: repeatAtual, total: repeatTotal };
+      setGuiadoLabel('playing', idx, total, ultimoRepeatInfo);
       destacarBloco(idx);
     },
     onEnd: () => {
       ultimoIndiceGuiado = 0;
+      ultimoRepeatInfo = null;
       setGuiadoLabel('idle', 0, rosarioBlocosAtual.length);
       const body = rel('rosarioBody');
       body.querySelectorAll('.bloco-atual').forEach((el) => el.classList.remove('bloco-atual'));

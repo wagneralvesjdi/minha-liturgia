@@ -14,13 +14,17 @@
 
   // Fila sequencial (ex.: oração guiada passo a passo, um item de cada vez).
   // Cada item pode ser uma string (fala por voz do aparelho) ou
-  // { text, audioUrl } (toca o áudio gravado; se falhar, cai pra fala).
+  // { text, audioUrl, repeat } (toca o áudio gravado; se falhar, cai pra
+  // fala; repeat repete esse mesmo passo N vezes antes de avançar —
+  // usado pras dezenas, ex.: Ave Maria 10x).
   let queueItems = null;
   let queueIndex = 0;
   let queueBtn = null;
   let queueOnItemChange = null;
   let queueOnEnd = null;
   let queueAudio = null; // <audio> tocando dentro da fila, se o passo atual usa áudio gravado
+  let queueCurrentItem = null;
+  let queueRepeatDone = 0;
 
   function pickVoice() {
     const voices = speechSynthesis.getVoices();
@@ -90,6 +94,8 @@
     queueBtn = null;
     queueOnItemChange = null;
     queueOnEnd = null;
+    queueCurrentItem = null;
+    queueRepeatDone = 0;
   }
 
   function speakNow(btn, text) {
@@ -173,11 +179,21 @@
   }
 
   function normalizeQueueItem(item) {
-    if (typeof item === 'string') return { text: item, audioUrl: null };
-    return { text: (item && item.text) || '', audioUrl: (item && item.audioUrl) || null };
+    if (typeof item === 'string') return { text: item, audioUrl: null, repeat: 1 };
+    const repeat = (item && item.repeat) || 1;
+    return { text: (item && item.text) || '', audioUrl: (item && item.audioUrl) || null, repeat };
   }
 
-  function queueAdvance() { queueIndex += 1; speakQueueItem(); }
+  // Repete o passo atual (ex.: 3ª de 10 Ave-Marias) antes de avançar pro
+  // próximo passo da fila.
+  function queueAdvance() {
+    if (queueRepeatDone < (queueCurrentItem ? queueCurrentItem.repeat : 1)) {
+      playCurrentRepeat();
+      return;
+    }
+    queueIndex += 1;
+    speakQueueItem();
+  }
 
   function speakQueueSpeech(text) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -198,6 +214,15 @@
     audio.play().catch(() => { queueAudio = null; speakQueueSpeech(item.text); });
   }
 
+  function playCurrentRepeat() {
+    queueRepeatDone += 1;
+    if (queueOnItemChange) {
+      queueOnItemChange(queueIndex, queueItems.length, queueRepeatDone, queueCurrentItem.repeat);
+    }
+    if (queueCurrentItem.audioUrl) speakQueueAudio(queueCurrentItem);
+    else speakQueueSpeech(queueCurrentItem.text);
+  }
+
   function speakQueueItem() {
     if (!queueItems || queueIndex >= queueItems.length) {
       const btn = queueBtn;
@@ -207,13 +232,14 @@
       queueBtn = null;
       queueOnItemChange = null;
       queueOnEnd = null;
+      queueCurrentItem = null;
+      queueRepeatDone = 0;
       if (onEnd) onEnd();
       return;
     }
-    if (queueOnItemChange) queueOnItemChange(queueIndex, queueItems.length);
-    const item = normalizeQueueItem(queueItems[queueIndex]);
-    if (item.audioUrl) speakQueueAudio(item);
-    else speakQueueSpeech(item.text);
+    queueCurrentItem = normalizeQueueItem(queueItems[queueIndex]);
+    queueRepeatDone = 0;
+    playCurrentRepeat();
   }
 
   // Toca uma lista de passos em sequência — cada passo pode ser um texto
