@@ -59,6 +59,14 @@ function audioUrlFor(chaveOracao) {
   return id ? `audio/oracoes/${id}.mp3` : null;
 }
 
+/* IDs dos áudios das notas/comentários fixos (não são orações do ORACOES,
+   são as falas de contexto entre uma oração e outra — abertura, fechamento,
+   introdução de cada terço etc.). Mesmo esquema: se o arquivo existir, toca;
+   senão cai pra voz do aparelho. */
+function notaAudioUrl(id) {
+  return id ? `audio/notas/${id}.mp3` : null;
+}
+
 function oracaoBloco(label, chaveOracao, vezes) {
   return { tipo: 'oracao', label, texto: ORACOES[chaveOracao], chaveOracao, vezes: vezes || 1 };
 }
@@ -161,7 +169,7 @@ function blocosAbertura() {
     oracaoBloco('Oferecimento', 'oferecimento'),
     oracaoBloco('Credo', 'credo'),
     oracaoBloco('Pai Nosso', 'paiNosso'),
-    { tipo: 'nota', texto: 'Três Ave-Marias, pedindo o aumento da Fé, da Esperança e da Caridade.' },
+    { tipo: 'nota', texto: 'Três Ave-Marias, pedindo o aumento da Fé, da Esperança e da Caridade.', audioUrl: notaAudioUrl('abertura-tres-ave-marias') },
     oracaoBloco('Ave Maria (3x)', 'aveMaria', 3),
     oracaoBloco('Glória', 'gloria'),
   ];
@@ -170,7 +178,7 @@ function blocosAbertura() {
 function blocosFechamento() {
   return [
     oracaoBloco('Salve Rainha', 'salveRainha'),
-    { tipo: 'nota', texto: 'V. Rogai por nós, Santa Mãe de Deus. R. Para que sejamos dignos das promessas de Cristo.' },
+    { tipo: 'nota', texto: 'V. Rogai por nós, Santa Mãe de Deus. R. Para que sejamos dignos das promessas de Cristo.', audioUrl: notaAudioUrl('fechamento-versiculo') },
     oracaoBloco('Oremos', 'oracaoFinalRosario'),
     oracaoBloco('Ação de Graças', 'acaoDeGracas'),
     oracaoBloco('Sinal da Cruz', 'sinalCruz'),
@@ -205,7 +213,7 @@ function buildRosarioCompleto() {
 
 function buildTercoMisericordia() {
   let blocos = [
-    { tipo: 'nota', texto: 'Terço da Misericórdia — rezado nas contas do terço comum, de preferência às 15h (Hora da Misericórdia).' },
+    { tipo: 'nota', texto: 'Terço da Misericórdia — rezado nas contas do terço comum, de preferência às 15h (Hora da Misericórdia).', audioUrl: notaAudioUrl('intro-terco-misericordia') },
     oracaoBloco('Sinal da Cruz', 'sinalCruz'),
     oracaoBloco('Pai Nosso', 'paiNosso'),
     oracaoBloco('Ave Maria', 'aveMaria'),
@@ -246,6 +254,7 @@ function buildTercoSaoMiguel() {
   blocos.push({
     tipo: 'nota',
     texto: 'Em honra aos quatro Arcanjos — São Miguel, São Gabriel, São Rafael e o nosso Anjo da Guarda — rezai quatro Pai-Nossos.',
+    audioUrl: notaAudioUrl('sao-miguel-quatro-arcanjos'),
   });
   blocos.push(oracaoBloco('Pai Nosso (4x)', 'paiNosso', 4));
   blocos.push(oracaoBloco('Oração a São Miguel Arcanjo', 'oracaoSaoMiguel'));
@@ -347,7 +356,7 @@ function renderReader(titulo, blocos) {
 function blocoTextoNarracao(bloco) {
   const texto = bloco.sub ? `${bloco.texto}. ${bloco.sub}` : bloco.texto;
   const textoFinal = bloco.label ? `${bloco.label}. ${texto}` : texto;
-  const audioUrl = bloco.chaveOracao ? audioUrlFor(bloco.chaveOracao) : null;
+  const audioUrl = bloco.audioUrl || (bloco.chaveOracao ? audioUrlFor(bloco.chaveOracao) : null);
   return { text: textoFinal, audioUrl, repeat: bloco.vezes || 1 };
 }
 
