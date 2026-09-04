@@ -185,10 +185,23 @@ function blocosFechamento() {
   ];
 }
 
+const INTRO_MISTERIOS_AUDIO = {
+  gozosos: 'intro-gozosos',
+  dolorosos: 'intro-dolorosos',
+  gloriosos: 'intro-gloriosos',
+  luminosos: 'intro-luminosos',
+};
+const NOME_MISTERIOS_AUDIO = {
+  gozosos: 'nome-gozosos',
+  dolorosos: 'nome-dolorosos',
+  gloriosos: 'nome-gloriosos',
+  luminosos: 'nome-luminosos',
+};
+
 function buildTerco(chave) {
   const grupo = MISTERIOS[chave];
   let blocos = [];
-  blocos.push({ tipo: 'nota', texto: `${grupo.nome} — ${grupo.dias}` });
+  blocos.push({ tipo: 'nota', texto: `${grupo.nome} — ${grupo.dias}`, audioUrl: notaAudioUrl(INTRO_MISTERIOS_AUDIO[chave]) });
   blocos = blocos.concat(blocosAbertura());
   grupo.lista.forEach((item, i) => { blocos = blocos.concat(blocoMisterio(i + 1, item)); });
   blocos = blocos.concat(blocosFechamento());
@@ -196,12 +209,12 @@ function buildTerco(chave) {
 }
 
 function buildRosarioCompleto() {
-  let blocos = [{ tipo: 'nota', texto: 'Rosário Completo — os quatro grupos de mistérios, 20 dezenas ao todo.' }];
+  let blocos = [{ tipo: 'nota', texto: 'Rosário Completo — os quatro grupos de mistérios, 20 dezenas ao todo.', audioUrl: notaAudioUrl('intro-rosario-completo') }];
   blocos = blocos.concat(blocosAbertura());
   let numero = 1;
   ['gozosos', 'dolorosos', 'gloriosos', 'luminosos'].forEach((chave) => {
     const grupo = MISTERIOS[chave];
-    blocos.push({ tipo: 'nota', texto: grupo.nome });
+    blocos.push({ tipo: 'nota', texto: grupo.nome, audioUrl: notaAudioUrl(NOME_MISTERIOS_AUDIO[chave]) });
     grupo.lista.forEach((item) => {
       blocos = blocos.concat(blocoMisterio(numero, item));
       numero += 1;
@@ -247,6 +260,7 @@ function buildTercoSaoMiguel() {
     {
       tipo: 'nota',
       texto: 'Terço de São Miguel Arcanjo — devoção revelada à Beata Antônia d\'Astonac e aprovada pela Igreja. Nove saudações aos nove coros angélicos, cada uma com um Pai-Nosso e três Ave-Marias.',
+      audioUrl: notaAudioUrl('intro-sao-miguel'),
     },
     oracaoBloco('Sinal da Cruz', 'sinalCruz'),
   ];
@@ -276,6 +290,7 @@ function buildTercoLibertacao() {
     {
       tipo: 'nota',
       texto: 'Terço do Rosário da Libertação — meditação original para este app, inspirada em "Se o Filho vos libertar, sereis verdadeiramente livres" (Jo 8,36), rezada na estrutura tradicional do terço.',
+      audioUrl: notaAudioUrl('intro-libertacao'),
     },
   ];
   blocos = blocos.concat(blocosAbertura());
@@ -297,6 +312,7 @@ function buildTercoChagas() {
     {
       tipo: 'nota',
       texto: 'Terço das Santas Chagas — devoção revelada à Irmã Maria Marta Chambon (1841-1907), Clarissa, e aprovada pela Igreja. Cinco dezenas em honra das Cinco Chagas de Cristo.',
+      audioUrl: notaAudioUrl('intro-chagas'),
     },
     oracaoBloco('Sinal da Cruz', 'sinalCruz'),
   ];
