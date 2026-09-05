@@ -153,9 +153,17 @@ const MISTERIOS_LIBERTACAO = [
   },
 ];
 
-function blocoMisterio(numero, item) {
+// Áudios das meditações de cada mistério ficam por conteúdo (ex.: "gozosos-1"),
+// não pelo número de ordem — o mesmo mistério é anunciado como "1º" no Terço
+// avulso e como "6º"/"11º"/"16º" no Rosário Completo, mas a meditação em si
+// (título + fruto) é idêntica, então um único áudio serve pros dois.
+function misterioAudioUrl(misterioId) {
+  return misterioId ? `audio/misterios/${misterioId}.mp3` : null;
+}
+
+function blocoMisterio(numero, item, misterioId) {
   return [
-    { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.fruto },
+    { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.fruto, audioUrl: misterioAudioUrl(misterioId) },
     oracaoBloco('Pai Nosso', 'paiNosso'),
     oracaoBloco('Ave Maria (10x)', 'aveMaria', 10),
     oracaoBloco('Glória', 'gloria'),
@@ -203,7 +211,7 @@ function buildTerco(chave) {
   let blocos = [];
   blocos.push({ tipo: 'nota', texto: `${grupo.nome} — ${grupo.dias}`, audioUrl: notaAudioUrl(INTRO_MISTERIOS_AUDIO[chave]) });
   blocos = blocos.concat(blocosAbertura());
-  grupo.lista.forEach((item, i) => { blocos = blocos.concat(blocoMisterio(i + 1, item)); });
+  grupo.lista.forEach((item, i) => { blocos = blocos.concat(blocoMisterio(i + 1, item, `${chave}-${i + 1}`)); });
   blocos = blocos.concat(blocosFechamento());
   return blocos;
 }
@@ -215,8 +223,8 @@ function buildRosarioCompleto() {
   ['gozosos', 'dolorosos', 'gloriosos', 'luminosos'].forEach((chave) => {
     const grupo = MISTERIOS[chave];
     blocos.push({ tipo: 'nota', texto: grupo.nome, audioUrl: notaAudioUrl(NOME_MISTERIOS_AUDIO[chave]) });
-    grupo.lista.forEach((item) => {
-      blocos = blocos.concat(blocoMisterio(numero, item));
+    grupo.lista.forEach((item, i) => {
+      blocos = blocos.concat(blocoMisterio(numero, item, `${chave}-${i + 1}`));
       numero += 1;
     });
   });
