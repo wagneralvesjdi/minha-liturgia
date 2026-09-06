@@ -161,6 +161,12 @@ function misterioAudioUrl(misterioId) {
   return misterioId ? `audio/misterios/${misterioId}.mp3` : null;
 }
 
+// "1ª Dezena".."5ª Dezena" — mesmo texto/áudio nos dois modos que usam
+// dezenas numeradas (Misericórdia e Chagas).
+function dezenaAudioUrl(numero) {
+  return numero ? `audio/misterios/dezena-${numero}.mp3` : null;
+}
+
 function blocoMisterio(numero, item, misterioId) {
   return [
     { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.fruto, audioUrl: misterioAudioUrl(misterioId) },
@@ -241,7 +247,7 @@ function buildTercoMisericordia() {
     oracaoBloco('Credo', 'credo'),
   ];
   for (let d = 1; d <= 5; d += 1) {
-    blocos.push({ tipo: 'misterio', texto: `${d}ª Dezena`, sub: '' });
+    blocos.push({ tipo: 'misterio', texto: `${d}ª Dezena`, sub: '', audioUrl: dezenaAudioUrl(d) });
     blocos.push(oracaoBloco('Na conta grande', 'ofertaMisericordia'));
     blocos.push(oracaoBloco('Nas 10 contas pequenas (10x)', 'pedidoMisericordia', 10));
   }
@@ -309,7 +315,7 @@ function buildTercoLibertacao() {
 
 function blocoDezenaChagas(numero) {
   return [
-    { tipo: 'misterio', texto: `${numero}ª Dezena`, sub: '' },
+    { tipo: 'misterio', texto: `${numero}ª Dezena`, sub: '', audioUrl: dezenaAudioUrl(numero) },
     oracaoBloco('Na conta grande', 'ofertaChagas'),
     oracaoBloco('Nas 10 contas pequenas (10x)', 'pedidoChagas', 10),
   ];
