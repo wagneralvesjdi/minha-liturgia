@@ -162,20 +162,22 @@
     }
     stop();
     const audio = new Audio(url);
-    audio.onended = () => { setLabel(btn, 'idle'); currentBtn = null; currentAudio = null; };
-    audio.onerror = () => {
+    // onerror (falha ao carregar) e a rejeição de play() podem disparar os
+    // dois pro mesmo erro — o guard evita cair pra voz do aparelho em dobro.
+    let fallbackDone = false;
+    const fallback = () => {
+      if (fallbackDone) return;
+      fallbackDone = true;
       currentAudio = null;
       currentBtn = null;
       if (supported && getFallbackText) toggle(btn, getFallbackText);
     };
+    audio.onended = () => { setLabel(btn, 'idle'); currentBtn = null; currentAudio = null; };
+    audio.onerror = fallback;
     currentAudio = audio;
     currentBtn = btn;
     setLabel(btn, 'playing');
-    audio.play().catch(() => {
-      currentAudio = null;
-      currentBtn = null;
-      if (supported && getFallbackText) toggle(btn, getFallbackText);
-    });
+    audio.play().catch(fallback);
   }
 
   function normalizeQueueItem(item) {
@@ -208,10 +210,19 @@
 
   function speakQueueAudio(item) {
     const audio = new Audio(item.audioUrl);
+    // Mesmo cuidado do playAudio: onerror e a rejeição de play() podem
+    // disparar os dois pro mesmo erro, duplicando a fala de reserva.
+    let fallbackDone = false;
+    const fallback = () => {
+      if (fallbackDone) return;
+      fallbackDone = true;
+      queueAudio = null;
+      speakQueueSpeech(item.text);
+    };
     audio.onended = () => { queueAudio = null; queueAdvance(); };
-    audio.onerror = () => { queueAudio = null; speakQueueSpeech(item.text); };
+    audio.onerror = fallback;
     queueAudio = audio;
-    audio.play().catch(() => { queueAudio = null; speakQueueSpeech(item.text); });
+    audio.play().catch(fallback);
   }
 
   function playCurrentRepeat() {
