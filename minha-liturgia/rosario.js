@@ -421,7 +421,7 @@ function iniciarModoGuiado() {
   if (window.MinhaLiturgiaNarration.queueActive(btn)) {
     window.MinhaLiturgiaNarration.playQueue(btn, null); // toggle pausa/continuar
     // playQueue mexe no texto do botão internamente; sobrescreve com o nosso formato.
-    const pausado = typeof speechSynthesis !== 'undefined' && speechSynthesis.paused;
+    const pausado = window.MinhaLiturgiaNarration.queueIsPaused();
     setGuiadoLabel(pausado ? 'paused' : 'playing', ultimoIndiceGuiado, rosarioBlocosAtual.length, ultimoRepeatInfo);
     return;
   }
@@ -448,6 +448,13 @@ function guiadoPular(delta) {
   const btn = rel('rosarioGuiadoBtn');
   if (!window.MinhaLiturgiaNarration.queueActive(btn)) return;
   window.MinhaLiturgiaNarration.queueGoTo(ultimoIndiceGuiado + delta);
+}
+
+function guiadoReiniciar() {
+  if (!window.MinhaLiturgiaNarration) return;
+  const btn = rel('rosarioGuiadoBtn');
+  if (!window.MinhaLiturgiaNarration.queueActive(btn)) return;
+  window.MinhaLiturgiaNarration.queueRestart();
 }
 
 function openMisterioList() {
@@ -499,6 +506,7 @@ function initRosario() {
   });
 
   rel('rosarioGuiadoBtn').addEventListener('click', iniciarModoGuiado);
+  rel('rosarioGuiadoReiniciar').addEventListener('click', guiadoReiniciar);
   rel('rosarioGuiadoAnterior').addEventListener('click', () => guiadoPular(-1));
   rel('rosarioGuiadoProximo').addEventListener('click', () => guiadoPular(1));
 }

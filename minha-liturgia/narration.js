@@ -25,6 +25,12 @@
   let queueAudio = null; // <audio> tocando dentro da fila, se o passo atual usa áudio gravado
   let queueCurrentItem = null;
   let queueRepeatDone = 0;
+  // Estado explícito da fila — evita depender de checar queueAudio.paused /
+  // speechSynthesis.speaking pra saber se dá pra pausar: no intervalo entre
+  // clicar em "play" e o áudio/fala realmente começar (setTimeout de 80ms),
+  // nenhum dos dois existe ainda, e pausar nesse instante caía num "else"
+  // que zerava a fila inteira — parecia "voltar pro início" ao continuar.
+  let queueState = 'idle'; // 'idle' | 'playing' | 'paused'
 
   function pickVoice() {
     const voices = speechSynthesis.getVoices();
@@ -96,6 +102,7 @@
     queueOnEnd = null;
     queueCurrentItem = null;
     queueRepeatDone = 0;
+    queueState = 'idle';
   }
 
   function speakNow(btn, text) {
@@ -245,12 +252,39 @@
       queueOnEnd = null;
       queueCurrentItem = null;
       queueRepeatDone = 0;
+      queueState = 'idle';
       if (onEnd) onEnd();
       return;
     }
     queueCurrentItem = normalizeQueueItem(queueItems[queueIndex]);
     queueRepeatDone = 0;
     playCurrentRepeat();
+  }
+
+  // Só toca de fato se ninguém pausou nesse meio-tempo — usado depois do
+  // pequeno atraso do início (ou de um pulo), pra não começar a tocar por
+  // cima de uma pausa que aconteceu antes do áudio/fala existir de verdade.
+  function attemptStartQueueItem() {
+    if (queueState === 'playing') speakQueueItem();
+  }
+
+  function queuePause(btn) {
+    if (queueAudio) queueAudio.pause();
+    else if (queueCurrentItem && speechSynthesis.speaking) speechSynthesis.pause();
+    // Se nem queueAudio nem fala existem ainda (pausou durante o atraso
+    // inicial), não há nada pra pausar fisicamente — só marcar o estado já
+    // resolve, porque attemptStartQueueItem vai checar antes de começar.
+    queueState = 'paused';
+    setLabel(btn, 'paused');
+  }
+
+  function queueResume(btn) {
+    queueState = 'playing';
+    setLabel(btn, 'playing');
+    if (queueAudio) { queueAudio.play(); return; }
+    if (queueCurrentItem && speechSynthesis.paused) { speechSynthesis.resume(); return; }
+    // Pausou antes do passo atual ter começado de verdade — começa agora.
+    if (!queueCurrentItem) speakQueueItem();
   }
 
   // Toca uma lista de passos em sequência — cada passo pode ser um texto
@@ -263,12 +297,8 @@
       if (window.showToast) window.showToast('Seu navegador não suporta narração por voz.');
       return;
     }
-    if (queueBtn === btn) {
-      if (queueAudio && !queueAudio.paused) { queueAudio.pause(); setLabel(btn, 'paused'); return; }
-      if (queueAudio && queueAudio.paused) { queueAudio.play(); setLabel(btn, 'playing'); return; }
-      if (speechSynthesis.speaking && !speechSynthesis.paused) { speechSynthesis.pause(); setLabel(btn, 'paused'); return; }
-      if (speechSynthesis.paused) { speechSynthesis.resume(); setLabel(btn, 'playing'); return; }
-    }
+    if (queueBtn === btn && queueState === 'playing') { queuePause(btn); return; }
+    if (queueBtn === btn && queueState === 'paused') { queueResume(btn); return; }
     stop();
     if (!Array.isArray(items) || !items.length) return;
     queueItems = items;
@@ -276,25 +306,31 @@
     queueBtn = btn;
     queueOnItemChange = onItemChange || null;
     queueOnEnd = onEnd || null;
+    queueState = 'playing';
     setLabel(btn, 'playing');
     speechSynthesis.cancel();
-    setTimeout(speakQueueItem, 80);
+    setTimeout(attemptStartQueueItem, 80);
   }
 
   function queueGoTo(index) {
     if (!queueItems) return;
     if (queueAudio) { queueAudio.pause(); queueAudio.onended = null; queueAudio.onerror = null; queueAudio = null; }
     speechSynthesis.cancel();
+    queueCurrentItem = null;
     queueIndex = Math.max(0, Math.min(index, queueItems.length - 1));
-    setTimeout(speakQueueItem, 80);
+    queueState = 'playing';
+    setLabel(queueBtn, 'playing');
+    setTimeout(attemptStartQueueItem, 80);
   }
 
+  function queueRestart() { queueGoTo(0); }
   function queueNext() { if (queueItems) queueGoTo(queueIndex + 1); }
   function queuePrev() { if (queueItems) queueGoTo(queueIndex - 1); }
   function queueActive(btn) { return queueBtn === btn; }
+  function queueIsPaused() { return queueState === 'paused'; }
 
   window.MinhaLiturgiaNarration = {
     supported, toggle, stop, textFrom, textFromBlocos, toSpeechCase, playAudio,
-    playQueue, queueNext, queuePrev, queueGoTo, queueActive,
+    playQueue, queueNext, queuePrev, queueGoTo, queueRestart, queueActive, queueIsPaused,
   };
 })();

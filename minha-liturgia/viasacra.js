@@ -162,7 +162,7 @@ function iniciarModoGuiadoViaSacra() {
   const btn = vsel('viaSacraGuiadoBtn');
   if (window.MinhaLiturgiaNarration.queueActive(btn)) {
     window.MinhaLiturgiaNarration.playQueue(btn, null);
-    const pausado = typeof speechSynthesis !== 'undefined' && speechSynthesis.paused;
+    const pausado = window.MinhaLiturgiaNarration.queueIsPaused();
     setViaSacraGuiadoLabel(pausado ? 'paused' : 'playing', ultimoIndiceGuiadoViaSacra, viaSacraBlocosAtual.length);
     return;
   }
@@ -189,6 +189,13 @@ function guiadoPularViaSacra(delta) {
   window.MinhaLiturgiaNarration.queueGoTo(ultimoIndiceGuiadoViaSacra + delta);
 }
 
+function guiadoReiniciarViaSacra() {
+  if (!window.MinhaLiturgiaNarration) return;
+  const btn = vsel('viaSacraGuiadoBtn');
+  if (!window.MinhaLiturgiaNarration.queueActive(btn)) return;
+  window.MinhaLiturgiaNarration.queueRestart();
+}
+
 function initViaSacra() {
   vsel('goViaSacraTradicional').addEventListener('click', () => {
     renderViaSacraReader('Via Sacra Tradicional', buildViaSacraTradicional());
@@ -197,6 +204,7 @@ function initViaSacra() {
     b.addEventListener('click', () => viaSacraStepShow('modo'));
   });
   vsel('viaSacraGuiadoBtn').addEventListener('click', iniciarModoGuiadoViaSacra);
+  vsel('viaSacraGuiadoReiniciar').addEventListener('click', guiadoReiniciarViaSacra);
   vsel('viaSacraGuiadoAnterior').addEventListener('click', () => guiadoPularViaSacra(-1));
   vsel('viaSacraGuiadoProximo').addEventListener('click', () => guiadoPularViaSacra(1));
 }
