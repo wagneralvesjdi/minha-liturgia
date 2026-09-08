@@ -564,6 +564,7 @@ let eucharistInitialized = false;
 let catechismInitialized = false;
 let horaSantaInitialized = false;
 let rosarioInitialized = false;
+let viaSacraInitialized = false;
 let santosInitialized = false;
 let santaseInitialized = false;
 let oracoesDiversasInitialized = false;
@@ -576,7 +577,7 @@ let lembretesInitialized = false;
 function showView(name) {
   if (window.MinhaLiturgiaNarration) window.MinhaLiturgiaNarration.stop();
 
-  ['home', 'liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas', 'favoritos', 'lembretes'].forEach((v) => {
+  ['home', 'liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'viasacra', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas', 'favoritos', 'lembretes'].forEach((v) => {
     const section = el(`view-${v}`);
     if (section) section.classList.toggle('hidden', v !== name);
   });
@@ -611,6 +612,12 @@ function showView(name) {
     if (!rosarioInitialized && window.MinhaLiturgiaRosario) {
       rosarioInitialized = true;
       window.MinhaLiturgiaRosario.initRosario();
+    }
+  } else if (name === 'viasacra') {
+    subtitle.textContent = 'As catorze estações do caminho da cruz';
+    if (!viaSacraInitialized && window.MinhaLiturgiaViaSacra) {
+      viaSacraInitialized = true;
+      window.MinhaLiturgiaViaSacra.initViaSacra();
     }
   } else if (name === 'santos') {
     subtitle.textContent = 'Santo do dia e calendário do ano';
@@ -679,6 +686,7 @@ function initRouter() {
   el('goCatecismo').addEventListener('click', () => showView('catecismo'));
   el('goHoraSanta').addEventListener('click', () => showView('horasanta'));
   el('goRosario').addEventListener('click', () => showView('rosario'));
+  el('goViaSacra').addEventListener('click', () => showView('viasacra'));
   el('goSantos').addEventListener('click', () => showView('santos'));
   el('goHomilia').addEventListener('click', () => showView('homilia'));
   el('goSantaSe').addEventListener('click', () => showView('santase'));
@@ -695,7 +703,7 @@ function initRouter() {
   });
 
   const initial = location.hash.replace('#/', '').replace('#', '');
-  const validViews = ['liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas', 'favoritos', 'lembretes'];
+  const validViews = ['liturgia', 'biblia', 'eucaristia', 'catecismo', 'horasanta', 'rosario', 'viasacra', 'santos', 'homilia', 'santase', 'oracoesdiversas', 'saomiguel', 'liturgiadashoras', 'promessas', 'favoritos', 'lembretes'];
   showView(validViews.includes(initial) ? initial : 'home');
 }
 

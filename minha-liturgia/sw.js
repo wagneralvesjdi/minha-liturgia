@@ -1,4 +1,4 @@
-const CACHE_NAME = 'minha-liturgia-v70';
+const CACHE_NAME = 'minha-liturgia-v71';
 const APP_SHELL = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const APP_SHELL = [
   './catechism.js',
   './horasanta.js',
   './rosario.js',
+  './viasacra.js',
   './santos.js',
   './homilia.js',
   './santase.js',

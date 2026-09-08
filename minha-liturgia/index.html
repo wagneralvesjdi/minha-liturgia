@@ -83,6 +83,16 @@
           <span class="home-card-compact-title">Santo Terço</span>
         </button>
 
+        <button id="goViaSacra" class="home-card-compact">
+          <span class="home-card-compact-icon" aria-hidden="true">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="19" y="6" width="6" height="32" rx="3" fill="currentColor" />
+              <rect x="9" y="15" width="26" height="6" rx="3" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="home-card-compact-title">Via Sacra</span>
+        </button>
+
         <button id="goLiturgiaDasHoras" class="home-card-compact">
           <span class="home-card-compact-icon" aria-hidden="true">
             <img src="icons/home/liturgia-das-horas.png" alt="" loading="lazy" />
@@ -450,6 +460,29 @@
     </section>
   </section>
 
+  <!-- ===== VIA SACRA ===== -->
+  <section id="view-viasacra" class="view hidden">
+    <button class="back-link" data-back-to="home">‹ Início</button>
+
+    <section id="viasacra-step-modo" class="bible-step">
+      <p class="fieis-note">Escolha a Via Sacra.</p>
+      <div class="book-list">
+        <button id="goViaSacraTradicional" class="book-btn"><span>Via Sacra Tradicional</span><small>As catorze estações, na sequência clássica</small></button>
+      </div>
+    </section>
+
+    <section id="viasacra-step-reader" class="bible-step hidden">
+      <button class="back-link" data-back-to="viasacra-modo">‹ Voltar</button>
+      <h2 id="viaSacraReaderTitle" class="bible-title"></h2>
+      <button id="viaSacraGuiadoBtn" class="btn subtle narration-btn">🎧 Rezar guiado por áudio</button>
+      <div id="viaSacraGuiadoNav" class="rosario-guiado-nav hidden">
+        <button id="viaSacraGuiadoAnterior" class="btn subtle">‹ Anterior</button>
+        <button id="viaSacraGuiadoProximo" class="btn subtle">Próximo ›</button>
+      </div>
+      <article id="viaSacraBody" class="card eucharist-body"></article>
+    </section>
+  </section>
+
   <!-- ===== SANTO DO DIA ===== -->
   <section id="view-santos" class="view hidden">
     <button class="back-link" data-back-to="home">‹ Início</button>
@@ -707,6 +740,7 @@
 <script src="catechism.js"></script>
 <script src="horasanta.js"></script>
 <script src="rosario.js"></script>
+<script src="viasacra.js"></script>
 <script src="santos.js"></script>
 <script src="homilia.js"></script>
 <script src="santase.js"></script>
