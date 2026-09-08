@@ -263,6 +263,7 @@ function blocoCoro(numero, coro) {
       tipo: 'misterio',
       texto: `${numero}º Coro — Santos ${coro.nome}`,
       sub: `Por intercessão de São Miguel e do celeste coro dos Santos ${coro.nome}, digne-se o Senhor conceder-nos a graça de que ${coro.graca}. Amém.`,
+      audioUrl: misterioAudioUrl(`sao-miguel-coro-${numero}`),
     },
     oracaoBloco('Pai Nosso', 'paiNosso'),
     oracaoBloco('Ave Maria (3x)', 'aveMaria', 3),
@@ -292,7 +293,7 @@ function buildTercoSaoMiguel() {
 
 function blocoMisterioLibertacao(numero, item) {
   return [
-    { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.texto },
+    { tipo: 'misterio', texto: `${numero}º Mistério — ${item.titulo}`, sub: item.texto, audioUrl: misterioAudioUrl(`libertacao-${numero}`) },
     oracaoBloco('Pai Nosso', 'paiNosso'),
     oracaoBloco('Ave Maria (10x)', 'aveMaria', 10),
     oracaoBloco('Glória', 'gloria'),
@@ -335,6 +336,7 @@ function buildTercoChagas() {
     tipo: 'oracao',
     label: 'Oração final',
     texto: 'Eterno Pai, eu Vos ofereço as Chagas de Nosso Senhor Jesus Cristo para curar as chagas de nossas almas, para reparar os pecados do mundo e para a salvação de todas as almas.',
+    audioUrl: notaAudioUrl('chagas-oracao-final'),
   });
   blocos.push(oracaoBloco('Sinal da Cruz', 'sinalCruz'));
   return blocos;
