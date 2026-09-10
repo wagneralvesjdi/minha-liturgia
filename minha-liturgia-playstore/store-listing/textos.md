@@ -13,14 +13,14 @@ Minha Liturgia
 ## Descrição curta (máx. 80 caracteres)
 
 ```
-Liturgia diária, Bíblia, Terço e orações católicas — funciona offline
+Liturgia diária, Bíblia, Terço, Via Sacra, orações católicas — offline
 ```
-(71 caracteres)
+(70 caracteres)
 
 ## Descrição completa (máx. 4000 caracteres)
 
 ```
-Minha Liturgia reúne, num só app, a celebração católica de cada dia e as principais orações e devoções da Igreja — pensado para funcionar bem mesmo sem internet, depois da primeira visita.
+Minha Liturgia reúne, num só app, a celebração católica de cada dia e as principais orações e devoções da Igreja — com narração em áudio nas principais orações, e pensado para funcionar bem mesmo sem internet, depois da primeira visita.
 
 MENSAGEM DO DIA
 Um versículo do Evangelho de hoje, escolhido automaticamente, logo na tela inicial.
@@ -41,7 +41,13 @@ HORA SANTA
 Roteiro de adoração ao Santíssimo do Apostolado da Oração, separado por mês do ano.
 
 SANTO TERÇO
-Reze o Terço, o Rosário Completo (quatro grupos de mistérios) ou devoções como o Terço da Misericórdia, o Terço de São Miguel Arcanjo, o Terço das Santas Chagas e o Terço do Rosário da Libertação.
+Reze o Terço, o Rosário Completo (quatro grupos de mistérios) ou devoções como o Terço da Misericórdia, o Terço de São Miguel Arcanjo, o Terço das Santas Chagas e o Terço do Rosário da Libertação — com modo guiado e narração em áudio, passo a passo.
+
+VIA SACRA
+As 14 estações da Via Sacra tradicional, com meditação em cada estação e modo guiado com narração, para rezar sozinho ou em grupo.
+
+LITURGIA DAS HORAS
+Ofício e Invitatório, Laudes, Hora Média e Vésperas, com os salmos e cânticos de cada hora.
 
 SANTO DO DIA
 A história e uma breve reflexão sobre o santo ou festa de hoje, com calendário navegável do ano inteiro.
@@ -60,7 +66,7 @@ Atalhos diretos para documentos oficiais do Vaticano — encíclicas, exortaçõ
 
 Sem anúncios. Sem cadastro. Sem coleta de dados pessoais.
 ```
-(aprox. 2270 caracteres — bem dentro do limite)
+(aprox. 2623 caracteres — bem dentro do limite)
 
 ## Categoria sugerida
 
