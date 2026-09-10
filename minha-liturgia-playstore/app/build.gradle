@@ -54,9 +54,8 @@ dependencies {
 
 // Gradle Play Publisher: permite rodar (via Android Studio ou "gradle" na
 // linha de comando)
-//   publishBundle    -> envia o .aab (versionCode automático)
-//   publishListing   -> envia textos + imagens da ficha da loja
-//   publish          -> os dois de uma vez
+//   publishReleaseBundle    -> envia o .aab (versionCode automático)
+//   publishReleaseListing   -> envia textos + imagens da ficha da loja
 // A credencial só existe no ambiente de CI (ver .github/workflows/release-android.yml
 // e o README, seção "Publicação automática"); sem ela, esses comandos falham
 // de propósito e o fluxo local no Android Studio continua funcionando normalmente.

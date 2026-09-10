@@ -91,7 +91,7 @@ jobs:
           PLAY_SERVICE_ACCOUNT_JSON_PATH: ${{ runner.temp }}/play-service-account.json
           RELEASE_TRACK: ${{ inputs.track || 'production' }}
         run: |
-          gradle :app:publish \
+          gradle :app:publishReleaseBundle :app:publishReleaseListing \
             -PMINHALITURGIA_RELEASE_STORE_FILE="$RUNNER_TEMP/release.jks" \
             -PMINHALITURGIA_RELEASE_STORE_PASSWORD="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
             -PMINHALITURGIA_RELEASE_KEY_ALIAS="${{ secrets.ANDROID_KEY_ALIAS }}" \
