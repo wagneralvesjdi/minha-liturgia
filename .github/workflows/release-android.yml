@@ -1,0 +1,105 @@
+name: Release Android (Play Store)
+
+# Constrói o .aab assinado do "Minha Liturgia" e publica automaticamente
+# na Play Store (binário + ficha da loja: textos, ícone, imagem de
+# destaque e screenshots), sem passo manual no Android Studio.
+#
+# Só dispara para mudanças que realmente afetam o app nativo — conteúdo
+# do PWA (pasta minha-liturgia/) é servido direto do site e não passa
+# por aqui, como documentado em minha-liturgia-playstore/README.md.
+#
+# Requer secrets configurados no repositório (veja o README, seção
+# "Publicação automática"): ANDROID_KEYSTORE_BASE64,
+# ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD,
+# PLAY_SERVICE_ACCOUNT_JSON. Sem eles, o job falha no passo de
+# assinatura/publicação — o repositório nunca fica sem essa proteção.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "minha-liturgia-playstore/app/**"
+      - "minha-liturgia-playstore/build.gradle"
+      - "minha-liturgia-playstore/settings.gradle"
+      - "minha-liturgia-playstore/store-listing/**"
+      - ".github/workflows/release-android.yml"
+  workflow_dispatch:
+    inputs:
+      track:
+        description: "Faixa de publicação na Play Store"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - beta
+          - alpha
+          - internal
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-android
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: minha-liturgia-playstore
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Configurar Gradle
+        # Este projeto não versiona gradlew/gradle-wrapper.jar (só
+        # gradle-wrapper.properties); por isso instalamos a mesma versão
+        # do Gradle diretamente e chamamos "gradle" em vez de "./gradlew".
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.11.1"
+
+      - name: Decodificar keystore de assinatura
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::Secret ANDROID_KEYSTORE_BASE64 não configurado — veja o README (Publicação automática) antes de rodar este workflow."
+            exit 1
+          fi
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+
+      - name: Decodificar credencial da Play Developer API
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
+            echo "::error::Secret PLAY_SERVICE_ACCOUNT_JSON não configurado — veja o README (Publicação automática) antes de rodar este workflow."
+            exit 1
+          fi
+          printf '%s' "$PLAY_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/play-service-account.json"
+
+      - name: Build + publicar (.aab e ficha da loja)
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON_PATH: ${{ runner.temp }}/play-service-account.json
+          RELEASE_TRACK: ${{ inputs.track || 'production' }}
+        run: |
+          gradle :app:publish \
+            -PMINHALITURGIA_RELEASE_STORE_FILE="$RUNNER_TEMP/release.jks" \
+            -PMINHALITURGIA_RELEASE_STORE_PASSWORD="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -PMINHALITURGIA_RELEASE_KEY_ALIAS="${{ secrets.ANDROID_KEY_ALIAS }}" \
+            -PMINHALITURGIA_RELEASE_KEY_PASSWORD="${{ secrets.ANDROID_KEY_PASSWORD }}" \
+            -Pplay.track="$RELEASE_TRACK" \
+            --no-daemon --stacktrace
+
+      - name: Limpar arquivos sensíveis temporários
+        if: always()
+        run: |
+          rm -f "$RUNNER_TEMP/release.jks" "$RUNNER_TEMP/play-service-account.json"
