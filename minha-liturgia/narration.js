@@ -163,7 +163,7 @@
       return;
     }
     if (currentBtn === btn && currentAudio && currentAudio.paused) {
-      currentAudio.play();
+      currentAudio.play().catch(() => {});
       setLabel(btn, 'playing');
       return;
     }
@@ -171,6 +171,11 @@
     const audio = new Audio(url);
     // onerror (falha ao carregar) e a rejeição de play() podem disparar os
     // dois pro mesmo erro — o guard evita cair pra voz do aparelho em dobro.
+    // AbortError acontece quando o próprio pause() interrompe essa promise
+    // (ex.: usuário pausa rápido logo após iniciar) — não é falha real, e
+    // tratá-lo como tal derrubava currentAudio/currentBtn bem na hora que
+    // o botão devia continuar "pausado", fazendo "continuar" reiniciar do
+    // zero em vez de retomar de onde parou.
     let fallbackDone = false;
     const fallback = () => {
       if (fallbackDone) return;
@@ -184,7 +189,7 @@
     currentAudio = audio;
     currentBtn = btn;
     setLabel(btn, 'playing');
-    audio.play().catch(fallback);
+    audio.play().catch((err) => { if (err && err.name !== 'AbortError') fallback(); });
   }
 
   function normalizeQueueItem(item) {
@@ -218,7 +223,10 @@
   function speakQueueAudio(item) {
     const audio = new Audio(item.audioUrl);
     // Mesmo cuidado do playAudio: onerror e a rejeição de play() podem
-    // disparar os dois pro mesmo erro, duplicando a fala de reserva.
+    // disparar os dois pro mesmo erro, duplicando a fala de reserva. E o
+    // mesmo cuidado com AbortError: um pause() logo após iniciar rejeita a
+    // promise de play() sem ser uma falha real — ignorar evita cair pra
+    // fala de reserva no meio de uma pausa normal.
     let fallbackDone = false;
     const fallback = () => {
       if (fallbackDone) return;
@@ -229,7 +237,7 @@
     audio.onended = () => { queueAudio = null; queueAdvance(); };
     audio.onerror = fallback;
     queueAudio = audio;
-    audio.play().catch(fallback);
+    audio.play().catch((err) => { if (err && err.name !== 'AbortError') fallback(); });
   }
 
   function playCurrentRepeat() {
