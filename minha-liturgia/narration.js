@@ -46,6 +46,27 @@
     speechSynthesis.onvoiceschanged = () => { ptVoice = pickVoice(); };
   }
 
+  // Sem isso, o Android (e o Android Auto, quando o celular está conectado
+  // ao carro) mostra um controle de mídia genérico, sem o ícone nem o nome
+  // do app — o navegador só usa o ícone certo quando a página informa os
+  // metadados da faixa que está tocando.
+  const hasMediaSession = typeof navigator !== 'undefined' && 'mediaSession' in navigator;
+  function updateMediaSession(playbackState, title) {
+    if (!hasMediaSession) return;
+    if (title) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title,
+        artist: 'Minha Liturgia',
+        album: 'Minha Liturgia',
+        artwork: [
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+        ],
+      });
+    }
+    navigator.mediaSession.playbackState = playbackState;
+  }
+
   function setLabel(btn, state) {
     if (!btn) return;
     btn.dataset.narrationState = state;
@@ -103,6 +124,7 @@
     queueCurrentItem = null;
     queueRepeatDone = 0;
     queueState = 'idle';
+    updateMediaSession('none');
   }
 
   function speakNow(btn, text) {
@@ -116,6 +138,7 @@
     currentUtterance = utterance;
     currentBtn = btn;
     setLabel(btn, 'playing');
+    updateMediaSession('playing', 'Minha Liturgia');
     speechSynthesis.speak(utterance);
   }
 
@@ -128,11 +151,13 @@
     if (currentBtn === btn && speechSynthesis.speaking && !speechSynthesis.paused) {
       speechSynthesis.pause();
       setLabel(btn, 'paused');
+      updateMediaSession('paused');
       return;
     }
     if (currentBtn === btn && speechSynthesis.paused) {
       speechSynthesis.resume();
       setLabel(btn, 'playing');
+      updateMediaSession('playing');
       return;
     }
 
@@ -160,11 +185,13 @@
     if (currentBtn === btn && currentAudio && !currentAudio.paused) {
       currentAudio.pause();
       setLabel(btn, 'paused');
+      updateMediaSession('paused');
       return;
     }
     if (currentBtn === btn && currentAudio && currentAudio.paused) {
       currentAudio.play().catch(() => {});
       setLabel(btn, 'playing');
+      updateMediaSession('playing');
       return;
     }
     stop();
@@ -189,6 +216,7 @@
     currentAudio = audio;
     currentBtn = btn;
     setLabel(btn, 'playing');
+    updateMediaSession('playing', 'Minha Liturgia');
     audio.play().catch((err) => { if (err && err.name !== 'AbortError') fallback(); });
   }
 
@@ -284,12 +312,14 @@
     // resolve, porque attemptStartQueueItem vai checar antes de começar.
     queueState = 'paused';
     setLabel(btn, 'paused');
+    updateMediaSession('paused');
   }
 
   function queueResume(btn) {
     queueState = 'playing';
     setLabel(btn, 'playing');
-    if (queueAudio) { queueAudio.play(); return; }
+    updateMediaSession('playing');
+    if (queueAudio) { queueAudio.play().catch(() => {}); return; }
     if (queueCurrentItem && speechSynthesis.paused) { speechSynthesis.resume(); return; }
     // Pausou antes do passo atual ter começado de verdade — começa agora.
     if (!queueCurrentItem) speakQueueItem();
@@ -316,6 +346,7 @@
     queueOnEnd = onEnd || null;
     queueState = 'playing';
     setLabel(btn, 'playing');
+    updateMediaSession('playing', 'Minha Liturgia');
     speechSynthesis.cancel();
     setTimeout(attemptStartQueueItem, 80);
   }
@@ -328,6 +359,7 @@
     queueIndex = Math.max(0, Math.min(index, queueItems.length - 1));
     queueState = 'playing';
     setLabel(queueBtn, 'playing');
+    updateMediaSession('playing');
     setTimeout(attemptStartQueueItem, 80);
   }
 
@@ -336,6 +368,25 @@
   function queuePrev() { if (queueItems) queueGoTo(queueIndex - 1); }
   function queueActive(btn) { return queueBtn === btn; }
   function queueIsPaused() { return queueState === 'paused'; }
+
+  // Controles do sistema (tela de bloqueio, fone Bluetooth, Android Auto)
+  // chamam esses handlers — sem eles, o carro só consegue mostrar a faixa
+  // tocando, sem play/pause/avançar funcionando pelos botões do painel.
+  if (hasMediaSession) {
+    navigator.mediaSession.setActionHandler('play', () => {
+      if (queueBtn && queueState === 'paused') { queueResume(queueBtn); return; }
+      if (currentAudio && currentAudio.paused) { currentAudio.play().catch(() => {}); setLabel(currentBtn, 'playing'); updateMediaSession('playing'); return; }
+      if (supported && speechSynthesis.paused) { speechSynthesis.resume(); updateMediaSession('playing'); }
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      if (queueBtn && queueState === 'playing') { queuePause(queueBtn); return; }
+      if (currentAudio && !currentAudio.paused) { currentAudio.pause(); setLabel(currentBtn, 'paused'); updateMediaSession('paused'); return; }
+      if (supported && speechSynthesis.speaking && !speechSynthesis.paused) { speechSynthesis.pause(); updateMediaSession('paused'); }
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', () => { if (queueItems) queuePrev(); });
+    navigator.mediaSession.setActionHandler('nexttrack', () => { if (queueItems) queueNext(); });
+    navigator.mediaSession.setActionHandler('stop', () => stop());
+  }
 
   window.MinhaLiturgiaNarration = {
     supported, toggle, stop, textFrom, textFromBlocos, toSpeechCase, playAudio,
