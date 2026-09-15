@@ -4,6 +4,19 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Serviço de mídia nativo (Terço/Rosário no Android Auto): precisa
+         rodar em primeiro plano com notificação de "tocando agora" e manter
+         a CPU acordada enquanto transmite os áudios pela internet. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Este app funciona em carros mesmo sem ser otimizado especificamente
+         pra tela do veículo — só expõe uma árvore de mídia (ver
+         automotive_app_desc.xml) que o Android Auto sabe navegar sozinho. -->
+    <uses-feature android:name="android.hardware.type.automotive" android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -74,6 +87,26 @@
         <meta-data
             android:name="android.support.customtabs.trusted.SCREEN_ORIENTATION"
             android:value="portrait" />
+
+        <!-- Diz ao Android Auto que este app expõe conteúdo de mídia
+             navegável (ver res/xml/automotive_app_desc.xml). -->
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+
+        <!-- MediaLibraryService: fonte da árvore de navegação (Terço,
+             Rosário Completo etc.) e player (ExoPlayer) usados pelo
+             Android Auto, pela Wear OS e por qualquer MediaController —
+             independente da TWA, que continua sendo a tela do celular. -->
+        <service
+            android:name=".media.MediaPlaybackService"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaLibraryService" />
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

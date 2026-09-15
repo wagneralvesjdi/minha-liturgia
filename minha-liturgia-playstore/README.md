@@ -124,6 +124,37 @@ projeto Android especificamente: ícone, nome do app, cor da tela de
 splash, ou a URL de lançamento. Isso agora acontece **automaticamente**
 via GitHub Actions — veja a seção abaixo.
 
+## Android Auto nativo
+
+Além da TWA (a tela do app no celular), o projeto agora tem um segundo
+componente independente: um `MediaLibraryService` (Media3/ExoPlayer) em
+`app/src/main/java/com/minhaliturgia/app/media/`, que expõe o Terço/Rosário
+como um app de mídia de verdade — navegável e controlável pelo Android
+Auto, tela de bloqueio e fones/carros Bluetooth. Ele **não substitui** a
+TWA nem depende dela; se o serviço de mídia falhar por qualquer motivo, o
+app continua funcionando normalmente no celular.
+
+- `MediaLibrary.kt` carrega `assets/media-library.json` e monta a árvore
+  de navegação (categoria → faixas).
+- `MediaPlaybackService.kt` expõe essa árvore via Media3 e toca os áudios
+  com ExoPlayer, direto das mesmas URLs já usadas pelo PWA.
+- `assets/media-library.json` é **gerado**, não editado à mão. Rode
+  `node tools/gen_media_library.js` (a partir desta pasta) sempre que o
+  conteúdo do Terço/Rosário mudar em `../minha-liturgia/rosario.js` ou
+  `viasacra.js` — o script executa as mesmas funções que montam a
+  narração guiada no site, garantindo que o app nativo toque exatamente a
+  mesma sequência, sem duas fontes de verdade divergindo com o tempo.
+- Via Sacra Tradicional ainda não entra nessa árvore: hoje as meditações
+  de cada estação são só texto (voz do navegador), sem áudio pré-gravado
+  — precisa narrar essas falas primeiro para incluir.
+
+**Importante:** não consegui compilar este projeto Kotlin/Media3 de ponta
+a ponta por aqui (mesmo bloqueio de rede ao Maven do Google mencionado
+acima), então o primeiro build real — e o primeiro teste de verdade no
+Android Auto (num carro ou no emulador do Android Studio com o "Android
+Auto Desktop Head Unit") — precisa ser feito por você antes de confiar
+nisso em produção.
+
 ## Publicação automática (GitHub Actions)
 
 O workflow `.github/workflows/release-android.yml` (na raiz do
