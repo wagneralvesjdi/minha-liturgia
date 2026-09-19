@@ -1,4 +1,4 @@
-const CACHE_NAME = 'minha-liturgia-v89';
+const CACHE_NAME = 'minha-liturgia-v90';
 const APP_SHELL = [
   './',
   './index.html',
@@ -129,6 +129,13 @@ const AUDIO_SHELL = [
   './audio/oracoesdiversas/oracao-a-sao-miguel-arcanjo.mp3',
   './audio/oracoesdiversas/oracao-de-sao-bento.mp3',
   './audio/oracoesdiversas/oracao-de-sao-francisco-de-assis.mp3',
+  './audio/oracoesdiversas/pequeno-exorcismo-de-santo-antonio.mp3',
+  './audio/oracoesdiversas/suplica-de-libertacao.mp3',
+  './audio/oracoesdiversas/para-caminhar-na-luz.mp3',
+  './audio/oracoesdiversas/para-pedir-animo.mp3',
+  './audio/oracoesdiversas/pela-bencao-da-familia.mp3',
+  './audio/oracoesdiversas/por-trabalho-e-sustento.mp3',
+  './audio/oracoesdiversas/de-consagracao-da-familia-a-jesus-e-maria.mp3',
 ];
 
 // Conteúdo grande e praticamente estático: cache-first para não baixar de novo a cada visita.
